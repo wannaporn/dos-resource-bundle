@@ -1,0 +1,10 @@
+parameters:
+    dos.form.type.single_entity.class: Dos\ResourceBundle\Form\SingleEntityType
+
+services:
+    dos.form.type.single_entity:
+        class: %dos.form.type.single_entity.class%
+        arguments:
+            - @doctrine
+        tags:
+            - { name: form.type, alias: single_entity }

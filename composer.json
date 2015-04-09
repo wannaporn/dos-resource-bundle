@@ -1,0 +1,32 @@
+{
+    "name": "liverbool/dos-resource",
+    "description": "Resource Bundle for Symfony",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ツ Liverbool",
+            "email": "nukboon@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "sylius/resource-bundle": "dev-master"
+    },
+    "require-dev": {
+        "liil/kint": "1.0"
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "autoload": {
+        "psr-4": { "Dos\\ResourceBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Dos\\ResourceBundle\\spec\\": "spec/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "master"
+        }
+    }
+}
