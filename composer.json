@@ -19,10 +19,10 @@
         "bin-dir": "bin"
     },
     "autoload": {
-        "psr-4": { "Dos\\ResourceBundle\\": "liverbool/dos-resource/src/" }
+        "psr-4": { "Dos\\ResourceBundle\\": "" }
     },
     "autoload-dev": {
-        "psr-4": { "Dos\\ResourceBundle\\spec\\": "liverbool/dos-resource/spec/" }
+        "psr-4": { "Dos\\ResourceBundle\\spec\\": "spec/" }
     },
     "extra": {
         "branch-alias": {
