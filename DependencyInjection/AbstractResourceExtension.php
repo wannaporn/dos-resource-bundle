@@ -5,7 +5,6 @@ namespace DoS\ResourceBundle\DependencyInjection;
 use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension as BaseAbstractResourceExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Parameter;
@@ -126,9 +125,6 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
             throw new BadMethodCallException('This extension does not follow the naming convention; you must overwrite the getAlias() method.');
         }
 
-        $classBaseName = substr(strrchr($className, '\\'), 1, -9);
-        $classBaseName = str_replace('DoS', 'Dos', $classBaseName);
-
-        return Container::underscore($classBaseName);
+        return AbstractResourceBundle::expectedAlias(substr(strrchr($className, '\\'), 1, -9));
     }
 }
