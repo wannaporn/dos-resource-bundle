@@ -2,14 +2,15 @@
 
 namespace DoS\ResourceBundle\DependencyInjection;
 
-use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension as Base;
+use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension as BaseAbstractResourceExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Parameter;
 
-class AbstractResourceExtension extends Base
+class AbstractResourceExtension extends BaseAbstractResourceExtension
 {
     protected $applicationName = 'dos';
     protected $configFormat = self::CONFIG_YAML;
