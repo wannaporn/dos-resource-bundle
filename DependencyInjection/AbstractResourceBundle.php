@@ -37,7 +37,15 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
      */
     public static function expectedAlias($name)
     {
-        return Container::underscore(str_replace('DoS', 'Dos', $name));
+        return Container::underscore(preg_replace('/^DoS/', 'Dos', $name));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getBundlePrefix()
+    {
+        return static::expectedAlias(substr(strrchr(get_class($this), '\\'), 1, -6));
     }
 
     /**
