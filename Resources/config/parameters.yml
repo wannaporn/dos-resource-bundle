@@ -1,5 +1,5 @@
 parameters:
     # MUST to hard code if no merge https://github.com/Sylius/Sylius/pull/1921
-    dos.controller.default.class: Dos\ResourceBundle\Controller\ResourceController
-    dos.repository.orm.default.class: Dos\ResourceBundle\Doctrine\ORM\EntityRepository
+    dos.controller.default.class: DoS\ResourceBundle\Controller\ResourceController
+    dos.repository.orm.default.class: DoS\ResourceBundle\Doctrine\ORM\EntityRepository
     dos.form.type.choice.default.class: %sylius.form.type.resource_choice.class%

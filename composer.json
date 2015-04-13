@@ -16,10 +16,10 @@
         "liil/kint": "1.0"
     },
     "autoload": {
-        "psr-4": { "Dos\\ResourceBundle\\": "" }
+        "psr-4": { "DoS\\ResourceBundle\\": "" }
     },
     "autoload-dev": {
-        "psr-4": { "Dos\\ResourceBundle\\spec\\": "spec/" }
+        "psr-4": { "DoS\\ResourceBundle\\spec\\": "spec/" }
     },
     "extra": {
         "branch-alias": {

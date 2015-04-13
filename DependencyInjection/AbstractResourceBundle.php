@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\DependencyInjection;
+namespace DoS\ResourceBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle as BaseAbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;

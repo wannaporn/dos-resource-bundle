@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\Form\Type;
+namespace DoS\ResourceBundle\Form\Type;
 
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType as BaseAbstractResourceType;
 

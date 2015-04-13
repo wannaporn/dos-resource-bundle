@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\Controller;
+namespace DoS\ResourceBundle\Controller;
 
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController as BaseResourceController;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Dos\ResourceBundle\Form;
+namespace DoS\ResourceBundle\Form;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Dos\ResourceBundle\Form\DataTransformer\IdentifierToObjectTransformer;
+use DoS\ResourceBundle\Form\DataTransformer\IdentifierToObjectTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Exception\LogicException;
 use Symfony\Component\Form\FormBuilderInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\Doctrine\Functions;
+namespace DoS\ResourceBundle\Doctrine\Functions;
 
 use Doctrine\ORM\Query\Lexer;
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;

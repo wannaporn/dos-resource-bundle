@@ -1,9 +1,9 @@
 <?php
 
-namespace Dos\ResourceBundle;
+namespace DoS\ResourceBundle;
 
-use Dos\ResourceBundle\DependencyInjection\AbstractResourceBundle;
+use DoS\ResourceBundle\DependencyInjection\AbstractResourceBundle;
 
-class DosResourceBundle extends AbstractResourceBundle
+class DoSResourceBundle extends AbstractResourceBundle
 {
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\Form\DataTransformer;
+namespace DoS\ResourceBundle\Form\DataTransformer;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 use Sylius\Bundle\ResourceBundle\Form\DataTransformer\ObjectToIdentifierTransformer;

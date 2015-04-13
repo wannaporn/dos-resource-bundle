@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\Doctrine\ORM;
+namespace DoS\ResourceBundle\Doctrine\ORM;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;

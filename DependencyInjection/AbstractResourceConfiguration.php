@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\DependencyInjection;
+namespace DoS\ResourceBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
@@ -70,13 +70,13 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                 ->end()
 
                 ->scalarNode('controller')
-                    ->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : 'Dos\ResourceBundle\Controller\ResourceController')
+                    ->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : 'DoS\ResourceBundle\Controller\ResourceController')
                     //->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : '%dos.controller.default.class%')
                 ->end()
 
                 ->scalarNode('repository')
                     ->cannotBeEmpty()
-                    ->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : 'Dos\ResourceBundle\Doctrine\ORM\EntityRepository')
+                    ->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : 'DoS\ResourceBundle\Doctrine\ORM\EntityRepository')
                     //->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : '%dos.repository.orm.default.class%')
                 ->end()
 

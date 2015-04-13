@@ -1,5 +1,5 @@
 parameters:
-    dos.form.type.single_entity.class: Dos\ResourceBundle\Form\SingleEntityType
+    dos.form.type.single_entity.class: DoS\ResourceBundle\Form\SingleEntityType
 
 services:
     dos.form.type.single_entity:

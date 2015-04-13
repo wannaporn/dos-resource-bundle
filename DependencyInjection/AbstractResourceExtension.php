@@ -1,6 +1,6 @@
 <?php
 
-namespace Dos\ResourceBundle\DependencyInjection;
+namespace DoS\ResourceBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\DependencyInjection\AbstractResourceExtension as Base;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
