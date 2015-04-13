@@ -111,4 +111,23 @@ class AbstractResourceExtension extends Base
             }
         }
     }
+
+    /**
+     * DoS translate to Dos preventing Container::underscore => do_s_
+     *
+     * @inheritedoc
+     */
+    public function getAlias()
+    {
+        $className = get_class($this);
+
+        if (substr($className, -9) != 'Extension') {
+            throw new BadMethodCallException('This extension does not follow the naming convention; you must overwrite the getAlias() method.');
+        }
+
+        $classBaseName = substr(strrchr($className, '\\'), 1, -9);
+        $classBaseName = str_replace('DoS', 'Dos', $classBaseName);
+
+        return Container::underscore($classBaseName);
+    }
 }
