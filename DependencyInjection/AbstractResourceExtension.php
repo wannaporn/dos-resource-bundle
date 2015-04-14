@@ -21,7 +21,8 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         'providers',
         'templatings',
         'listeners',
-        'state_callbacks',
+        'settings',
+        'callbacks',
         'forms',
         'mails',
         'menus',
@@ -39,6 +40,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         ContainerBuilder $container,
         $configure = self::CONFIGURE_LOADER
     ) {
+        // TODO: on/off this feature
         // NOTE! MUST Order UiBundle First! of all bundles
         $menus = $container->hasParameter('dos.menus')
             ? $container->getParameter('dos.menus')
