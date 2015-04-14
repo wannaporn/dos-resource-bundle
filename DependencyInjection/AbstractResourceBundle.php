@@ -19,10 +19,11 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
     {
         foreach($this->getDependencyBundles() as $bundle) {
             $name = get_class($bundle);
-            if (in_array($name, static::$registredBundles)) {
+            if (array_key_exists($name, static::$registredBundles)) {
                 continue;
             }
 
+            static::$registredBundles[$name] = true;
             $bundles[] = $bundle;
         }
     }
