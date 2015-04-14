@@ -15,3 +15,6 @@ services:
         class: %dos.form.type.money.class%
         tags:
             - { name: form.type, alias: dos_money }
+
+    dos.money:
+        alias: sylius.templating.helper.money
