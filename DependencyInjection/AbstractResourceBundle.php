@@ -11,6 +11,26 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
     protected $mappingFormat = self::MAPPING_YAML;
 
     /**
+     * If need, We can register dependency bundle here.
+     */
+    public function __construct(array &$bundles = array())
+    {
+        $bundles = array_merge($bundles, $this->getDependencyBundles());
+    }
+
+    /**
+     * Dependency bundles
+     *
+     * @return array
+     */
+    protected function getDependencyBundles()
+    {
+        return array(
+            /* new \Vendor\VendorDependencyBundle(), */
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSupportedDrivers()
