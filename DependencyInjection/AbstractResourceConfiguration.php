@@ -31,11 +31,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         }
 
         $node->append($this->createTemplatesNode());
-
-        if (!empty($validationGroups)) {
-            $this->addValidationGroupsSection($node, $validationGroups);
-        }
-
+        $this->addValidationGroupsSection($node, $validationGroups);
 
         return $this;
     }
