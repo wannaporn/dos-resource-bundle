@@ -10,8 +10,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "sylius/resource-bundle": "dev-master",
-        "sylius/money-bundle": "dev-master"
+        "sylius/resource": "0.14.*@dev",
+        "sylius/resource-bundle": "0.14.*@dev",
+        "sylius/money-bundle": "0.14.*@dev"
     },
     "require-dev": {
         "liil/kint": "1.0",
