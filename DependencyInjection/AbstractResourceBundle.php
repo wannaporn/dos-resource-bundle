@@ -12,15 +12,16 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
 
     /**
      * If need, We can register dependency bundle here.
-     * FIXME: This's not good practice @see https://github.com/symfony/symfony/issues/13505
+     * FIXME: This's not good practice @see https://github.com/symfony/symfony/issues/13505.
      */
     public function __construct(array &$bundles = array())
     {
+        // TODO: check registerd bundle before merge
         $bundles = array_merge($bundles, $this->getDependencyBundles());
     }
 
     /**
-     * Dependency bundles
+     * Dependency bundles.
      *
      * @return array
      */
@@ -52,7 +53,7 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
     }
 
     /**
-     * Dos expected  alias (dos_xx not do_s_xx)
+     * Dos expected  alias (dos_xx not do_s_xx).
      *
      * @return string
      */

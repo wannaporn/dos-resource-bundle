@@ -116,7 +116,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
     }
 
     /**
-     * DoS translate to Dos preventing Container::underscore => do_s_
+     * DoS translate to Dos preventing Container::underscore => do_s_.
      *
      * @inheritedoc
      */

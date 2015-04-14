@@ -6,5 +6,4 @@ use Sylius\Component\Resource\Model\SoftDeletableInterface as BaseSoftDeletableI
 
 interface SoftDeletableInterface extends BaseSoftDeletableInterface
 {
-
 }

@@ -6,5 +6,4 @@ use Sylius\Component\Resource\Model\TimestampableInterface as BaseTimestampableI
 
 interface TimestampableInterface extends BaseTimestampableInterface
 {
-
 }
