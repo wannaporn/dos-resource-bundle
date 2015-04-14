@@ -22,10 +22,20 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
      */
     protected function addDefaults(ArrayNodeDefinition $node, $driver = null, $objectManager = null, array $validationGroups = array())
     {
-        $node->append($this->createDriverNode($driver));
-        $node->append($this->createObjectManagerNode($objectManager));
+        if ($driver) {
+            $node->append($this->createDriverNode($driver));
+        }
+
+        if ($objectManager) {
+            $node->append($this->createObjectManagerNode($objectManager));
+        }
+
         $node->append($this->createTemplatesNode());
-        $this->addValidationGroupsSection($node, $validationGroups);
+
+        if (!empty($validationGroups)) {
+            $this->addValidationGroupsSection($node, $validationGroups);
+        }
+
 
         return $this;
     }
@@ -80,9 +90,9 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                     //->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : '%dos.repository.orm.default.class%')
                 ->end()
 
-                ->scalarNode('interface')
-                    ->defaultValue(isset($defaults['interface']) ? $defaults['interface'] : null)
-                ->end()
+                //->scalarNode('interface')
+                //    ->defaultValue(isset($defaults['interface']) ? $defaults['interface'] : null)
+                //->end()
 
                 ->append($this->createFormsNode(isset($defaults['form']) ? $defaults['form'] : null))
                 ->end()
