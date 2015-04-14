@@ -12,6 +12,7 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
 
     /**
      * If need, We can register dependency bundle here.
+     * FIXME: This's not good practice @see https://github.com/symfony/symfony/issues/13505
      */
     public function __construct(array &$bundles = array())
     {
