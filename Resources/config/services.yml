@@ -1,10 +1,17 @@
 parameters:
-    dos.form.type.single_entity.class: DoS\ResourceBundle\Form\SingleEntityType
+    dos.form.type.single_entity.class: DoS\ResourceBundle\Form\Type\EntityType
+    dos.form.type.money.class: DoS\ResourceBundle\Form\Type\MoneyType
 
 services:
-    dos.form.type.single_entity:
+    dos.form.type.entity:
         class: %dos.form.type.single_entity.class%
         arguments:
             - @doctrine
         tags:
-            - { name: form.type, alias: single_entity }
+            - { name: form.type, alias: dos_entity }
+
+    dos.form.type.money:
+        parent: sylius.form.type.money
+        class: %dos.form.type.money.class%
+        tags:
+            - { name: form.type, alias: dos_money }

@@ -1,6 +1,6 @@
 <?php
 
-namespace DoS\ResourceBundle\Form;
+namespace DoS\ResourceBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use DoS\ResourceBundle\Form\DataTransformer\IdentifierToObjectTransformer;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class SingleEntityType extends AbstractType
+class EntityType extends AbstractType
 {
     /**
      * Manager registry.
@@ -75,6 +75,6 @@ class SingleEntityType extends AbstractType
      */
     public function getName()
     {
-        return 'single_entity';
+        return 'dos_entity';
     }
 }
