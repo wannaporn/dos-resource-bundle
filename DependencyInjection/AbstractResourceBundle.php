@@ -9,6 +9,7 @@ use Symfony\Component\DependencyInjection\Container;
 abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
 {
     protected $mappingFormat = self::MAPPING_YAML;
+    protected static $registredBundles = array();
 
     /**
      * If need, We can register dependency bundle here.
@@ -16,8 +17,14 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
      */
     public function __construct(array &$bundles = array())
     {
-        // TODO: check registerd bundle before merge
-        $bundles = array_merge($bundles, $this->getDependencyBundles());
+        foreach($this->getDependencyBundles() as $bundle) {
+            $name = get_class($bundle);
+            if (in_array($name, static::$registredBundles)) {
+                continue;
+            }
+
+            $bundles[] = $bundle;
+        }
     }
 
     /**
