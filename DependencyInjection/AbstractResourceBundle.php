@@ -2,9 +2,11 @@
 
 namespace DoS\ResourceBundle\DependencyInjection;
 
+use DoS\ResourceBundle\DependencyInjection\Compiler\ResolveDoctrineTargetEntitiesPass;
 use Sylius\Bundle\ResourceBundle\AbstractResourceBundle as BaseAbstractResourceBundle;
 use Sylius\Bundle\ResourceBundle\SyliusResourceBundle;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
 {
@@ -77,6 +79,20 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
 
         if ($this->extension) {
             return $this->extension;
+        }
+    }
+
+    public function build(ContainerBuilder $builder)
+    {
+        parent::build($builder);
+
+        if ($extension = $this->getContainerExtension()) {
+            $builder->addCompilerPass(
+                new ResolveDoctrineTargetEntitiesPass(
+                    $this->getBundlePrefix(),
+                    $extension->getAlias()
+                )
+            );
         }
     }
 }

@@ -19,6 +19,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
      * @param array               $validationGroups
      *
      * @return $this
+     * @deprecated
      */
     protected function addDefaults(ArrayNodeDefinition $node, $driver = null, $objectManager = null, array $validationGroups = array())
     {
@@ -77,19 +78,14 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
 
                 ->scalarNode('controller')
                     ->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : 'DoS\ResourceBundle\Controller\ResourceController')
-                    //->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : '%dos.controller.default.class%')
                 ->end()
 
                 ->scalarNode('repository')
                     ->cannotBeEmpty()
                     ->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : 'DoS\ResourceBundle\Doctrine\ORM\EntityRepository')
-                    //->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : '%dos.repository.orm.default.class%')
                 ->end()
 
-                //->scalarNode('interface')
-                //    ->defaultValue(isset($defaults['interface']) ? $defaults['interface'] : null)
-                //->end()
-
+                ->append($this->createInterfaceNode(isset($defaults['interface']) ? $defaults['interface'] : null))
                 ->append($this->createFormsNode(isset($defaults['form']) ? $defaults['form'] : null))
                 ->end()
             ->end()
@@ -148,6 +144,28 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         $node
             ->cannotBeEmpty()
             ->info('Name of object Manager')
+            ->end();
+
+        return $node;
+    }
+
+    /**
+     * @param string $default
+     *
+     * @return ScalarNodeDefinition
+     */
+    protected function createInterfaceNode($default = null)
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('interface', 'scalar');
+
+        if ($default) {
+            $node->defaultValue($default);
+        }
+
+        $node
+            ->cannotBeEmpty()
+            ->info('Name of model interface')
             ->end();
 
         return $node;
@@ -285,5 +303,23 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         ;
 
         return $node;
+    }
+
+    protected function setDefaults(ArrayNodeDefinition $node, array $configs = array())
+    {
+        $configs = array_replace_recursive(array(
+            'driver' => SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
+            'object_manager' => 'default',
+            'templates' => null,
+            'classes' => array(),
+            'validation_groups' => array(),
+        ), $configs);
+
+        $node->append($this->createDriverNode($configs['driver']));
+        $node->append($this->createObjectManagerNode($configs['object_manager']));
+        $node->append($this->createTemplateNode($configs['templates']));
+        $node->append($this->createResourcesSection($configs['classes']));
+
+        $this->addValidationGroupsSection($node, $configs['validation_groups']);
     }
 }

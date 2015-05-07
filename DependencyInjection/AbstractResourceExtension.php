@@ -116,6 +116,45 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
     }
 
     /**
+     * {@inheritdoc}
+     */
+    protected function mapClassParameters(array $classes, ContainerBuilder $container)
+    {
+        $interfaces = array();
+        foreach ($classes as $model => $serviceClasses) {
+            foreach ($serviceClasses as $service => $class) {
+                if ('form' === $service) {
+                    if (!is_array($class)) {
+                        $class = array(self::DEFAULT_KEY => $class);
+                    }
+                    foreach ($class as $suffix => $subClass) {
+                        $container->setParameter(
+                            sprintf(
+                                '%s.form.type.%s%s.class',
+                                $this->applicationName,
+                                $model,
+                                $suffix === self::DEFAULT_KEY ? '' : sprintf('_%s', $suffix)
+                            ),
+                            $subClass
+                        );
+                    }
+                } elseif ('translation' === $service) {
+                    $this->mapClassParameters(array(sprintf('%s_translation', $model) => $class), $container);
+                } else {
+                    $name = sprintf('%s.%s.%s.class', $this->applicationName, $service, $model);
+                    $container->setParameter($name, $class);
+
+                    if ($service === 'interface') {
+                        $interfaces[$name] = sprintf('%s.%s.%s.class', $this->applicationName, 'model', $model);
+                    }
+                }
+            }
+        }
+
+        $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
+    }
+
+    /**
      * DoS translate to Dos preventing Container::underscore => do_s_.
      *
      * @inheritedoc
