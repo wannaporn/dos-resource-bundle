@@ -31,7 +31,6 @@ class ResolveDoctrineTargetEntitiesPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         if (SyliusResourceBundle::DRIVER_DOCTRINE_ORM === $this->getDriver($container)) {
-
             $name = $this->extensionAlias . '_interfaces';
 
             if ($container->hasParameter($name)) {
