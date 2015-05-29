@@ -19,6 +19,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         'parameters',
         'services',
         'providers',
+        'controllers',
         'templatings',
         'listeners',
         'settings',
