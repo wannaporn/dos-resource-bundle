@@ -152,7 +152,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
             }
         }
 
-        $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
+        $container->setParameter($this->getAlias().'_interfaces', $interfaces);
     }
 
     /**

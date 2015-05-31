@@ -19,6 +19,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
      * @param array               $validationGroups
      *
      * @return $this
+     *
      * @deprecated
      */
     protected function addDefaults(ArrayNodeDefinition $node, $driver = null, $objectManager = null, array $validationGroups = array())
