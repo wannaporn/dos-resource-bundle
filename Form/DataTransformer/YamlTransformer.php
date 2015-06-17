@@ -8,7 +8,7 @@ use Symfony\Component\Yaml\Yaml;
 class YamlTransformer implements DataTransformerInterface
 {
     /**
-     * The level where you switch to inline YAML
+     * The level where you switch to inline YAML.
      *
      * @var int
      */

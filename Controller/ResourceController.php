@@ -29,6 +29,7 @@ class ResourceController extends BaseResourceController
     /**
      * @param $resource
      * @param bool|true $dosRepository
+     *
      * @return \Doctrine\ORM\EntityRepository|EntityRepository
      */
     protected function getEntityRepository($resource, $dosRepository = true)
@@ -46,6 +47,7 @@ class ResourceController extends BaseResourceController
 
     /**
      * @param $string
+     *
      * @return bool
      */
     protected function stringToBoolean($string)
@@ -67,7 +69,7 @@ class ResourceController extends BaseResourceController
         $resource = parent::findOr404($request, $criteria);
 
         if ($roles = $this->config->getParameters()->get('is_granted')) {
-            $this->denyAccessUnlessGranted((array)$roles, $resource);
+            $this->denyAccessUnlessGranted((array) $roles, $resource);
         }
 
         return $resource;
@@ -87,7 +89,7 @@ class ResourceController extends BaseResourceController
         $accessor = PropertyAccess::createPropertyAccessor();
         $accessor->setValue($resource, $path, $this->stringToBoolean($state));
 
-        $this->getManager()->transactional(function() use ($state, $resource, $path) {
+        $this->getManager()->transactional(function () use ($state, $resource, $path) {
             if ($state) {
                 // reset other to false
                 $this->getEntityRepository($resource)->bulkUpdate(array($path => false));
@@ -111,6 +113,7 @@ class ResourceController extends BaseResourceController
      * @param Request $request
      * @param $state
      * @param null $path
+     *
      * @return RedirectResponse|Response
      */
     public function enableStateAction(Request $request, $state, $path = null)

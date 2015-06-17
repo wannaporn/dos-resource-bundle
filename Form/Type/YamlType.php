@@ -27,7 +27,7 @@ class YamlType extends AbstractType
         parent::setDefaultOptions($resolver);
 
         $resolver->setDefaults(array(
-            'inline_level' => 10
+            'inline_level' => 10,
         ));
     }
 
