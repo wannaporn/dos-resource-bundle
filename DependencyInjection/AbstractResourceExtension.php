@@ -13,21 +13,20 @@ use Symfony\Component\DependencyInjection\Parameter;
 class AbstractResourceExtension extends BaseAbstractResourceExtension
 {
     protected $applicationName = 'dos';
-    protected $configFormat = self::CONFIG_YAML;
 
     protected $configFiles = array(
-        'parameters',
-        'services',
-        'providers',
-        'controllers',
-        'templatings',
-        'listeners',
-        'settings',
-        'callbacks',
-        'forms',
-        'mails',
-        'menus',
-        'twigs',
+        'parameters.yml',
+        'services.yml',
+        'providers.yml',
+        'controllers.yml',
+        'templatings.yml',
+        'listeners.yml',
+        'settings.yml',
+        'callbacks.yml',
+        'forms.yml',
+        'mails.yml',
+        'menus.yml',
+        'twigs.yml',
     );
 
     /**
@@ -59,25 +58,15 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         return array($config, $loader);
     }
 
-    /**
-     * @param array           $config
-     * @param LoaderInterface $loader
-     */
-    protected function loadConfigurationFile(array $config, LoaderInterface $loader)
-    {
-        foreach ($config as $filename) {
-            if (file_exists($file = sprintf('%s/%s.%s', $this->getConfigurationDirectory(), $filename, $this->configFormat))) {
-                $loader->load($file);
-                $this->loaded[$filename] = true;
-            }
-        }
-    }
-
     protected function registerFormTypes(array $config, ContainerBuilder $container)
     {
         foreach ($config['classes'] as $model => $serviceClasses) {
             if (!isset($serviceClasses['form']) || !is_array($serviceClasses['form'])) {
                 continue;
+            }
+
+            if ($this->isTranslationSupported() && isset($serviceClasses['translation'])) {
+                $this->registerFormTypes(array('classes' => array(sprintf('%s_translation', $model) => $serviceClasses['translation'])), $container);
             }
 
             foreach ($serviceClasses['form'] as $name => $class) {
@@ -169,5 +158,15 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         }
 
         return AbstractResourceBundle::expectedAlias(substr(strrchr($className, '\\'), 1, -9));
+    }
+
+    /**
+     * Are translations supported in this app?
+     *
+     * @return bool
+     */
+    private function isTranslationSupported()
+    {
+        return class_exists('Sylius\Bundle\TranslationBundle\DependencyInjection\Mapper');
     }
 }
