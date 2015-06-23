@@ -51,7 +51,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
             : array()
         ;
 
-        list($config, $loader) = parent::configure($config, $configuration, $container, $configure);
+        $config = parent::configure($config, $configuration, $container, $configure);
 
         if (isset($this->loaded['menus'])) {
             $container->setParameter('dos.menus',
@@ -59,7 +59,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
             );
         }
 
-        return array($config, $loader);
+        return $config;
     }
 
     protected function registerFormTypes(array $config, ContainerBuilder $container)
@@ -75,8 +75,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
 
             foreach ($serviceClasses['form'] as $name => $class) {
                 $suffix = ($name === self::DEFAULT_KEY ? '' : sprintf('_%s', $name));
-                $definitionId = sprintf('%s.form.type.%s%s', $this->applicationName, $model,
-                    $suffix);
+                $definitionId = sprintf('%s.form.type.%s%s', $this->applicationName, $model, $suffix);
 
                 // check definition already exists.
                 if ($container->hasDefinition($definitionId)) {
