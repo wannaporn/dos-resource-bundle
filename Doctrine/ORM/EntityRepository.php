@@ -88,4 +88,28 @@ class EntityRepository extends BaseEntityRepository
 
         return false;
     }
+
+    public function bulkUpdate(array $paths, array $criteria = array())
+    {
+        $queryBuilder = $this->_em->createQueryBuilder()
+            ->update($this->_entityName, $this->getAlias())
+        ;
+
+        $parameters = array();
+
+        foreach ($paths as $path => $value) {
+            $queryBuilder->set($this->getPropertyName($path), ':'.$path);
+            $parameters[$path] = $value;
+        }
+
+        foreach ($criteria as $key => $value) {
+            $parameters[$key] = $value;
+        }
+
+        $this->applyCriteria($queryBuilder, $criteria);
+
+        return $this->_em
+            ->createQuery($queryBuilder->getDQL())
+            ->execute($parameters);
+    }
 }

@@ -1,6 +1,7 @@
 parameters:
     dos.form.type.single_entity.class: DoS\ResourceBundle\Form\Type\EntityType
     dos.form.type.money.class: DoS\ResourceBundle\Form\Type\MoneyType
+    dos.form.type.yaml.class: DoS\ResourceBundle\Form\Type\YamlType
 
 services:
     dos.form.type.entity:
@@ -15,6 +16,11 @@ services:
         class: %dos.form.type.money.class%
         tags:
             - { name: form.type, alias: dos_money }
+
+    dos.form.type.yaml:
+        class: %dos.form.type.yaml.class%
+        tags:
+            - { name: form.type, alias: dos_yaml }
 
     dos.money:
         alias: sylius.templating.helper.money

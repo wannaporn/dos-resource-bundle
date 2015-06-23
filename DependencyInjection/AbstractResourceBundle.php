@@ -29,7 +29,7 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
     {
         $bundle = explode('\\', $class = get_called_class());
 
-        return str_replace($bundle[count($bundle) -1], 'Model', $class);
+        return str_replace($bundle[count($bundle) - 1], 'Model', $class);
     }
 
     /**

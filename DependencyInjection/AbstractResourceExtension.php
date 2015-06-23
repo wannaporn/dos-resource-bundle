@@ -19,6 +19,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         'parameters',
         'services',
         'providers',
+        'controllers',
         'templatings',
         'listeners',
         'settings',
@@ -151,7 +152,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
             }
         }
 
-        $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
+        $container->setParameter($this->getAlias().'_interfaces', $interfaces);
     }
 
     /**

@@ -1,2 +1,5 @@
-composer.phar
 vendor/
+bin/
+
+composer.phar
+composer.lock

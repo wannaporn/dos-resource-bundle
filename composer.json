@@ -10,9 +10,11 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "sylius/resource": "dev-master",
-        "sylius/resource-bundle": "dev-master",
-        "sylius/money-bundle": "dev-master"
+        "misd/phone-number-bundle": "~1.0",
+        "sylius/resource": "0.15.x-dev",
+        "sylius/resource-bundle": "0.15.x-dev",
+        "sylius/money-bundle": "0.15.x-dev",
+        "symfony/yaml": "~2.5"
     },
     "require-dev": {
         "liil/kint": "1.0",
@@ -26,7 +28,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "master-dev"
+            "dev-master": "2.0-dev"
         }
     }
 }
