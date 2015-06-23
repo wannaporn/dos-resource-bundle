@@ -4,9 +4,14 @@ namespace DoS\ResourceBundle\DependencyInjection;
 
 use Sylius\Bundle\ResourceBundle\DependencyInjection\Extension\AbstractResourceExtension as BaseAbstractResourceExtension;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Parameter;
 
 class AbstractResourceExtension extends BaseAbstractResourceExtension
@@ -157,6 +162,35 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         }
 
         return AbstractResourceBundle::expectedAlias(substr(strrchr($className, '\\'), 1, -9));
+    }
+
+    /**
+     * Check existing before load!
+     *
+     * @inheritedoc
+     */
+    protected function loadServiceDefinitions(ContainerBuilder $containerBuilder, $files)
+    {
+        $locator = new FileLocator($this->getDefinitionPath());
+
+        $resolver = new LoaderResolver(
+            array(
+                new XmlFileLoader($containerBuilder, $locator),
+                new YamlFileLoader($containerBuilder, $locator),
+            ) + $this->getExtraLoaders($containerBuilder)
+        );
+
+        $loader = new DelegatingLoader($resolver);
+
+        if (!is_array($files)) {
+            $files = array($files);
+        }
+
+        foreach ($files as $file) {
+            if (file_exists($this->configDirectory .'/'.$file)) {
+                $loader->load($file);
+            }
+        }
     }
 
     /**
