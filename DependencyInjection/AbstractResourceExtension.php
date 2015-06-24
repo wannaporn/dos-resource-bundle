@@ -89,16 +89,11 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
                 $definition = new Definition($class);
 
                 if ('choice' === $name) {
-                    $definition->setArguments(array(
-                        $serviceClasses['model'],
-                        $config['driver'],
-                        $alias,
-                    ));
+                    $definition->setArguments(array($serviceClasses['model'], $config['driver'], $alias));
                 } else {
                     $definition->setArguments(array(
                         $serviceClasses['model'],
-                        new Parameter(sprintf('%s.validation_group.%s%s', $this->applicationName,
-                            $model, $suffix)),
+                        new Parameter(sprintf('%s.validation_group.%s%s', $this->applicationName, $model, $suffix)),
                     ));
                 }
 
@@ -186,7 +181,7 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
         }
 
         foreach ($files as $file) {
-            if (file_exists($this->configDirectory .'/'.$file)) {
+            if (file_exists($this->getDefinitionPath() .'/'.$file)) {
                 $loader->load($file);
             }
         }
