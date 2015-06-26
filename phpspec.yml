@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: DoS\ResourceBundle
+        psr4_prefix: DoS\ResourceBundle
+        src_path: .
