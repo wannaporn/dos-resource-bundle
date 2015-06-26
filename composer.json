@@ -10,7 +10,9 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "knplabs/gaufrette": "0.2.*@dev",
         "misd/phone-number-bundle": "~1.0",
+        "sylius/originator": "0.15.*@dev",
         "sylius/resource": "0.15.*@dev",
         "sylius/resource-bundle": "0.15.*@dev",
         "sylius/money-bundle": "0.15.*@dev",
