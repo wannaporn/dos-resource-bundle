@@ -27,7 +27,6 @@ services:
     dos.money:
         alias: sylius.templating.helper.money
 
-services:
     dos.listener.uuid_generator:
         class: %dos.listener.uuid_generator.class%
         tags:
