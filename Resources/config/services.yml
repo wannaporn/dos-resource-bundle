@@ -4,6 +4,8 @@ parameters:
     dos.form.type.yaml.class: DoS\ResourceBundle\Form\Type\YamlType
 
     dos.listener.uuid_generator.class: DoS\ResourceBundle\EventListener\UuidGeneratorListener
+    dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
+    dos.originator.class: Sylius\Component\Originator\Originator\Originator
 
 services:
     dos.form.type.entity:
@@ -31,3 +33,20 @@ services:
         class: %dos.listener.uuid_generator.class%
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+
+    dos.upload_filesystem:
+        class: Gaufrette\Filesystem
+        factory_service: knp_gaufrette.filesystem_map
+        factory_method: get
+        arguments:
+            - %dos.uploader.filesystem%
+
+    dos.image_uploader:
+        class: %dos.image_uploader.class%
+        arguments:
+            - @dos.upload_filesystem
+
+    dos.originator:
+        class: %dos.originator.class%
+        arguments:
+            - @doctrine
