@@ -4,7 +4,7 @@ namespace DoS\ResourceBundle\EventListener;
 
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Id\UuidGenerator;
-use DoS\CoreBundle\Model\UuidAwareInterface;
+use DoS\ResourceBundle\Model\UuidAwareInterface;
 
 class UuidGeneratorListener
 {

@@ -14,6 +14,9 @@ class ImageUploader implements ImageUploaderInterface
         $this->filesystem = $filesystem;
     }
 
+    /**
+     * @param ImageInterface $image
+     */
     public function upload(ImageInterface $image)
     {
         if (!$image->hasFile()) {
@@ -38,11 +41,21 @@ class ImageUploader implements ImageUploaderInterface
         );
     }
 
+    /**
+     * @param $path
+     *
+     * @return bool
+     */
     public function remove($path)
     {
         return $this->filesystem->delete($path);
     }
 
+    /**
+     * @param $path
+     *
+     * @return string
+     */
     private function expandPath($path)
     {
         return sprintf(
