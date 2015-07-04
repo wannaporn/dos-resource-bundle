@@ -7,6 +7,13 @@ parameters:
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
     dos.originator.class: Sylius\Component\Originator\Originator\Originator
 
+    dos.class.twig.extension.intl: DoS\ResourceBundle\Twig\Extension\Intl
+    dos.class.twig.extension.generic: DoS\ResourceBundle\Twig\Extension\Generic
+    dos.class.twig.extension.image: DoS\ResourceBundle\Twig\Extension\Image
+    dos.class.twig.extension.arrays: DoS\ResourceBundle\Twig\Extension\Arrays
+    dos.class.twig.extension.currency: DoS\ResourceBundle\Twig\Extension\Currency
+    dos.class.twig.extension.resource: DoS\ResourceBundle\Twig\Extension\Resource
+
 services:
     dos.form.type.entity:
         class: %dos.form.type.single_entity.class%
@@ -50,3 +57,46 @@ services:
         class: %dos.originator.class%
         arguments:
             - @doctrine
+
+    twig.extension.intl:
+        class: %dos.class.twig.extension.intl%
+        arguments:
+            - %dos.locale_traditional%
+        tags:
+            - { name: twig.extension }
+
+    ui.twig.extension.generic:
+        class: %dos.class.twig.extension.generic%
+        arguments:
+            - @service_container
+        tags:
+            - { name: twig.extension }
+
+    ui.twig.extension.image:
+        class: %dos.class.twig.extension.image%
+        arguments:
+            - @liip_imagine.cache.manager
+            - @liip_imagine.filter.configuration
+            - %dos.image_holder%
+        tags:
+            - { name: twig.extension }
+
+    ui.twig.extension.arrays:
+        class: %dos.class.twig.extension.arrays%
+        tags:
+            - { name: twig.extension }
+
+    ui.twig.extension.currency:
+        class: %dos.class.twig.extension.currency%
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @sylius.templating.helper.money
+            - @sylius.templating.helper.settings
+
+    ui.twig.extension.resource:
+        parent: sylius.twig.extension.resource
+        class: %dos.class.twig.extension.resource%
+        tags:
+            - { name: twig.extension }
+            - { name: kernel.event_listener, event: kernel.request, method: fetchRequest }

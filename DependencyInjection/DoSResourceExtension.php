@@ -27,5 +27,8 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $container->prependExtensionConfig('sylius_resource', $config);
+
+        $container->setParameter('dos.locale_traditional', true);
+        $container->setParameter('dos.image_holder', null);
     }
 }

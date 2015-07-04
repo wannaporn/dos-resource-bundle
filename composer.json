@@ -16,7 +16,8 @@
         "sylius/resource": "0.15.*@dev",
         "sylius/resource-bundle": "0.15.*@dev",
         "sylius/money-bundle": "0.15.*@dev",
-        "symfony/yaml": "~2.5"
+        "symfony/yaml": "~2.5",
+        "twig/extensions": "^1.2"
     },
     "require-dev": {
         "liil/kint": "1.0",
