@@ -11,6 +11,7 @@ class UuidGeneratorListener
     public function prePersist(LifecycleEventArgs $event)
     {
         $object = $event->getObject();
+
         if ($object instanceof UuidAwareInterface and !$object->getId()) {
             $object->setId((new UuidGenerator())->generate($event->getEntityManager(), $object));
         }
