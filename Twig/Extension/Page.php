@@ -56,11 +56,16 @@ class Page extends \Twig_Extension
 
     /**
      * @param $file
+     * @param \Twig_Template|null $scope
      *
      * @return string
      */
-    public function getUiFile($file)
+    public function getUiFile($file, \Twig_Template $scope = null)
     {
+        if ($scope) {
+            return $this->getUiPageSelf($scope, $file);
+        }
+
         return sprintf('ui:%s.html.twig', $file);
     }
 

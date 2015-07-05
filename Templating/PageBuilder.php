@@ -131,17 +131,15 @@ class PageBuilder
             'reset_style' => false,
             'reset_meta' => false,
             'reset_breadcrumb' => false,
-            'form' => null,
-            'header' => true,
+            'heading' => null,
             'inited' => false,
         ));
 
         $resolver->setAllowedTypes(array(
             'inited' => array('boolean'),
-            'header' => array('boolean'),
+            'heading' => array('null', 'string'),
             'metas' => array('null', 'array'),
             'blocks' => array('null', 'array'),
-            'form' => array('null', 'array'),
         ));
     }
 }
