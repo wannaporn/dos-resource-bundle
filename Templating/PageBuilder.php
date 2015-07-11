@@ -132,12 +132,14 @@ class PageBuilder
             'reset_meta' => false,
             'reset_breadcrumb' => false,
             'heading' => null,
+            'icon' => null,
             'inited' => false,
         ));
 
         $resolver->setAllowedTypes(array(
             'inited' => array('boolean'),
             'heading' => array('null', 'string'),
+            'icon' => array('null', 'string'),
             'metas' => array('null', 'array'),
             'blocks' => array('null', 'array'),
         ));
