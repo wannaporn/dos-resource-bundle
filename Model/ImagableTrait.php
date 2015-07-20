@@ -19,7 +19,7 @@ trait ImagableTrait
      */
     public function hasFile()
     {
-        return $this->file !== null;
+        return null !== $this->file;
     }
 
     /**
@@ -33,9 +33,17 @@ trait ImagableTrait
     /**
      * @param null|\SplFileInfo $file
      */
-    public function setFile(\SplFileInfo $file = null)
+    public function setFile(\SplFileInfo $file)
     {
         $this->file = $file;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasPath()
+    {
+        return null !== $this->path;
     }
 
     /**
