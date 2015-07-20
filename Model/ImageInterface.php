@@ -15,9 +15,9 @@ interface ImageInterface extends TimestampableInterface
     public function getFile();
 
     /**
-     * @param \SplFileInfo $file
+     * @param null|\SplFileInfo $file
      */
-    public function setFile(\SplFileInfo $file);
+    public function setFile(\SplFileInfo $file = null);
 
     /**
      * @return string
