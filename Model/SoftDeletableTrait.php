@@ -12,6 +12,14 @@ trait SoftDeletableTrait
     /**
      * {@inheritdoc}
      */
+    public function isDeleted()
+    {
+        return (null !== $this->deletedAt) && ((new \DateTime()) >= $this->deletedAt);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getDeletedAt()
     {
         return $this->deletedAt;
