@@ -5,16 +5,20 @@ namespace DoS\ResourceBundle\EventListener;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use DoS\ResourceBundle\Model\ImageInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ImageUploadSubscriber implements EventSubscriber
+class ImageUploadSubscriber implements ContainerAwareInterface, EventSubscriber
 {
     /**
      * @var ContainerInterface;
      */
     private $container;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * {@inheritdoc}
+     */
+    public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
     }
