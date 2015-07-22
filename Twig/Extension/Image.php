@@ -49,7 +49,8 @@ class Image extends \Twig_Extension
     public function getFilters()
     {
         return array(
-            'ui_image_filter' => new \Twig_Filter_Method($this, 'filter'),
+            'ui_image_filter' => new \Twig_Filter_Method($this, 'filter'), // deprecated
+            'ui_image' => new \Twig_Filter_Method($this, 'filter'),
         );
     }
 
