@@ -12,9 +12,15 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
      */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $this->configure($configs, new Configuration(), $container,
+        $config = $this->configure($configs, new Configuration(), $container,
             self::CONFIGURE_LOADER
         );
+
+        if ($config['form_factory']['enabled']) {
+            $container->setParameter('dos.form.factory.class', $config['form_factory']['class']);
+            $container->setParameter('dos.form.factory.override_pattern', $config['form_factory']['pattern']);
+            $container->setParameter('dos.form.factory.override_replacement', $config['form_factory']['replacement']);
+        }
     }
 
     /**
@@ -30,11 +36,5 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
 
         $container->setParameter('dos.locale_traditional', true);
         $container->setParameter('dos.image_holder', null);
-
-        if ($config['form_factory']['enabled']) {
-            $container->setParameter('dos.form.factory.class', $config['form_factory']['class']);
-            $container->setParameter('dos.form.factory.override_pattern', $config['form_factory']['pattern']);
-            $container->setParameter('dos.form.factory.override_replacement', $config['form_factory']['replacement']);
-        }
     }
 }
