@@ -3,6 +3,7 @@ parameters:
     dos.form.type.money.class: DoS\ResourceBundle\Form\Type\MoneyType
     dos.form.type.yaml.class: DoS\ResourceBundle\Form\Type\YamlType
 
+    dos.listener.ajax_redirect.class: DoS\ResourceBundle\EventListener\AjaxRedirect
     dos.listener.sylius_translator_replace.class: DoS\ResourceBundle\EventListener\ReplaceSyliusTrans
     dos.listener.uuid_generator.class: DoS\ResourceBundle\EventListener\UuidGeneratorListener
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
@@ -18,6 +19,10 @@ parameters:
     dos.class.twig.extension.page: DoS\ResourceBundle\Twig\Extension\Page
 
 services:
+    dos.listener.ajax_redirect:
+        class: %dos.listener.ajax_redirect.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: setJsonRedirection }
 
     dos.listener.sylius_translator_replace:
         class: %dos.listener.sylius_translator_replace.class%
