@@ -16,5 +16,6 @@ class DoSResourceBundle extends AbstractResourceBundle
         parent::build($container);
 
         $container->addCompilerPass(new Compiler\ExpressionLanguagePass());
+        $container->addCompilerPass(new Compiler\FormFactoryPass());
     }
 }

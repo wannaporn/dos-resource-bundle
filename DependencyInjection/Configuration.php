@@ -16,8 +16,31 @@ class Configuration extends AbstractResourceConfiguration
         $rootNode = $treeBuilder->root('dos_resource');
 
         $this->addSettingsSection($rootNode);
+        $this->addFormFactoryNode($rootNode);
 
         return $treeBuilder;
+    }
+
+    /**
+     * Adds `settings` section.
+     *
+     * @param $node
+     */
+    private function addFormFactoryNode(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('form_factory')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->booleanNode('enabled')->defaultTrue()->end()
+                        ->variableNode('class')->defaultValue('DoS\ResourceBundle\Form\Factory')->end()
+                        ->variableNode('pattern')->defaultValue('/(sylius|fos|core)/')->end()
+                        ->variableNode('replacement')->defaultValue('dos_')->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     /**

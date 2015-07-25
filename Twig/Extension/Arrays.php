@@ -19,6 +19,8 @@ class Arrays extends \Twig_Extension
 
         return array(
             new \Twig_SimpleFilter('is_array', 'is_array'),
+            new \Twig_SimpleFilter('in_array', 'in_array'),
+            new \Twig_SimpleFilter('search_array', 'array_search'),
         );
     }
 
