@@ -53,8 +53,8 @@ class Factory extends FormFactory
      */
     public function setPrefixAndReplacement($pattern = null, $replacement = null)
     {
-        $this->pattern = $pattern ?: $this->pattern
-        $this->replacement = $replacement ?: $this->replacement
+        $this->pattern = $pattern ?: $this->pattern;
+        $this->replacement = $replacement ?: $this->replacement;
     }
 
     /**
