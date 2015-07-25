@@ -35,7 +35,7 @@ class Configuration extends AbstractResourceConfiguration
                     ->children()
                         ->booleanNode('enabled')->defaultTrue()->end()
                         ->variableNode('class')->defaultValue('DoS\ResourceBundle\Form\Factory')->end()
-                        ->variableNode('pattern')->defaultValue('/(sylius|fos|core)/')->end()
+                        ->variableNode('pattern')->defaultValue('/(sylius|fos|core)_/')->end()
                         ->variableNode('replacement')->defaultValue('dos_')->end()
                     ->end()
                 ->end()
