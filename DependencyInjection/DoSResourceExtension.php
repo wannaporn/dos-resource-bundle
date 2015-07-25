@@ -31,7 +31,8 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
         $configs = $container->getExtensionConfig($this->getAlias());
         // use the Configuration class to generate a config array with
         $config = $this->processConfiguration(new Configuration(), $configs);
-
+        // remove dos_resource config before append to sylius_resource.
+        unset($config['form_factory']);
         $container->prependExtensionConfig('sylius_resource', $config);
 
         $container->setParameter('dos.locale_traditional', true);
