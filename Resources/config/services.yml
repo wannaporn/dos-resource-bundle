@@ -3,6 +3,7 @@ parameters:
     dos.form.type.money.class: DoS\ResourceBundle\Form\Type\MoneyType
     dos.form.type.yaml.class: DoS\ResourceBundle\Form\Type\YamlType
 
+    dos.listener.sylius_translator_replace.class: DoS\ResourceBundle\EventListener\ReplaceSyliusTrans
     dos.listener.uuid_generator.class: DoS\ResourceBundle\EventListener\UuidGeneratorListener
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
     dos.originator.class: Sylius\Component\Originator\Originator\Originator
@@ -17,6 +18,12 @@ parameters:
     dos.class.twig.extension.page: DoS\ResourceBundle\Twig\Extension\Page
 
 services:
+
+    dos.listener.sylius_translator_replace:
+        class: %dos.listener.sylius_translator_replace.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.response, method: replaceKeys }
+
     dos.form.type.entity:
         class: %dos.form.type.single_entity.class%
         arguments:
