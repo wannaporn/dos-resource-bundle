@@ -9,6 +9,7 @@ parameters:
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
     dos.originator.class: Sylius\Component\Originator\Originator\Originator
     dos.templating.page_builder.class: DoS\ResourceBundle\Templating\PageBuilder
+    dos.rest.view_handler.class: DoS\ResourceBundle\Rest\ViewHandler
 
     dos.class.twig.extension.intl: DoS\ResourceBundle\Twig\Extension\Intl
     dos.class.twig.extension.generic: DoS\ResourceBundle\Twig\Extension\Generic
@@ -19,6 +20,10 @@ parameters:
     dos.class.twig.extension.page: DoS\ResourceBundle\Twig\Extension\Page
 
 services:
+    dos.rest.view_handler:
+        parent: fos_rest.view_handler.default
+        class: %dos.rest.view_handler.class%
+
     dos.listener.ajax_redirect:
         class: %dos.listener.ajax_redirect.class%
         tags:
