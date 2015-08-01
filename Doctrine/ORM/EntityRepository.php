@@ -11,6 +11,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EntityRepository extends BaseEntityRepository
 {
     /**
+     * @return \Doctrine\ORM\Query\Expr
+     */
+    protected function expr()
+    {
+        return $this->_em->getExpressionBuilder();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function createUserList(array $criteria = null, array $orderBy = null)
