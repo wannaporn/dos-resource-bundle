@@ -44,7 +44,7 @@ class ImageUploadSubscriber implements ContainerAwareInterface, EventSubscriber
     /**
      * {@inheritdoc}
      */
-    public function postPersist(LifecycleEventArgs $event)
+    public function preUpdate(LifecycleEventArgs $event)
     {
         $this->upload($event->getObject());
     }
@@ -56,7 +56,7 @@ class ImageUploadSubscriber implements ContainerAwareInterface, EventSubscriber
     {
         return array(
             'prePersist',
-            'postPersist',
+            'preUpdate',
         );
     }
 }
