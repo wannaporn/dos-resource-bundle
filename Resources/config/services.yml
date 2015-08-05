@@ -134,3 +134,8 @@ services:
             - [setContainer, [@service_container]]
         tags:
             - { name: twig.extension }
+
+    dos.twig.extension.text:
+     class: Twig_Extensions_Extension_Text
+     tags:
+         - { name: twig.extension }
