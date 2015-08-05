@@ -81,6 +81,8 @@ services:
         class: %dos.templating.page_builder.class%
         arguments:
             - @dos.settings
+        calls:
+            - [setSeoPage, [@sonata.seo.page]]
 
     dos.twig.extension.intl:
         class: %dos.class.twig.extension.intl%
@@ -130,6 +132,7 @@ services:
         strict: false
         arguments:
             - @dos.templating.page_builder
+            - @sonata.seo.twig.extension
         calls:
             - [setContainer, [@service_container]]
         tags:

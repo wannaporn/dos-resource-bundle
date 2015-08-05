@@ -3,6 +3,7 @@
 namespace DoS\ResourceBundle\Twig\Extension;
 
 use DoS\ResourceBundle\Templating\PageBuilder;
+use Sonata\SeoBundle\Twig\Extension\SeoExtension;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
@@ -24,9 +25,15 @@ class Page extends \Twig_Extension
      */
     private $request;
 
-    public function __construct(PageBuilder $pageBuilder)
+    /**
+     * @var SeoExtension
+     */
+    private $seoExtension;
+
+    public function __construct(PageBuilder $pageBuilder, SeoExtension $seoExtension = null)
     {
         $this->pageBuilder = $pageBuilder;
+        $this->seoExtension = $seoExtension;
     }
 
     /**
@@ -43,7 +50,7 @@ class Page extends \Twig_Extension
      */
     public function getFunctions()
     {
-        return array(
+        return array_merge(array(
             new \Twig_SimpleFunction('ui_page', array($this, 'getUiFile')),
             new \Twig_SimpleFunction('ui_page_is', array($this, 'isPageId')),
             new \Twig_SimpleFunction('ui_page_get', array($this, 'getPageOption')),
@@ -51,7 +58,15 @@ class Page extends \Twig_Extension
             new \Twig_SimpleFunction('ui_page_actions', array($this, 'getUiPageActions')),
             new \Twig_SimpleFunction('ui_page_self', array($this, 'getUiPageSelf')),
             new \Twig_SimpleFunction('ui_css_if', array($this, 'getCssIfMatchRoute')),
-        );
+        ), $this->seoExtension ? array(
+            new \Twig_SimpleFunction('ui_seo_title', array($this->seoExtension, 'getTitle'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_metadatas', array($this->seoExtension, 'getMetadatas'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_html_attributes', array($this->seoExtension, 'getHtmlAttributes'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_head_attributes', array($this->seoExtension, 'getHeadAttributes'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_link_canonical', array($this->seoExtension, 'getLinkCanonical'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_lang_alternates', array($this->seoExtension, 'getLangAlternates'), array('is_safe' => array('html'))),
+            new \Twig_SimpleFunction('ui_seo_oembed_links', array($this->seoExtension, 'getOembedLinks'), array('is_safe' => array('html'))),
+        ) : array());
     }
 
     /**
@@ -106,7 +121,7 @@ class Page extends \Twig_Extension
     /**
      * @param array $options
      */
-    public function setPageOptions(array $options)
+    public function setPageOptions(array $options = array())
     {
         $this->pageBuilder->setOptions($options);
     }

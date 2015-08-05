@@ -2,6 +2,7 @@
 
 namespace DoS\ResourceBundle\Templating;
 
+use Sonata\SeoBundle\Seo\SeoPageInterface;
 use Sylius\Bundle\SettingsBundle\Templating\Helper\SettingsHelper;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,12 +18,25 @@ class PageBuilder
      */
     protected $options = array();
 
+    /**
+     * @var SeoPageInterface
+     */
+    protected $seoPage;
+
     //private $theme = null;
 
     public function __construct(SettingsHelper $settingsHelper, $defaultOptions = array())
     {
         $this->settingsHelper = $settingsHelper;
         $this->options = $defaultOptions;
+    }
+
+    /**
+     * @param SeoPageInterface|null $seoPage
+     */
+    public function setSeoPage($seoPage = null)
+    {
+        $this->seoPage = $seoPage;
     }
 
     /**
@@ -46,6 +60,32 @@ class PageBuilder
 
         if (!$this->options['header']) {
             $this->options['css'] = trim($this->options['css'].' no page header');
+        }
+
+        if (isset($options['keywords'])) {
+            $this->options['metas']['keywords'] = $options['keywords'];
+        }
+
+        if (isset($options['description'])) {
+            $this->options['metas']['description'] = $options['description'];
+        }
+
+        if ($seo = $this->seoPage) {
+            $seo->setTitle($this->options['title']);
+
+            if ($this->options['canonical']) {
+                $seo->setLinkCanonical($this->options['canonical']);
+            }
+
+            foreach ($this->options['metas'] as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $k => $v) {
+                        $seo->addMeta('property', $k, $v);
+                    }
+                } else {
+                    $seo->addMeta('name', $key, $value);
+                }
+            }
         }
     }
 
@@ -115,17 +155,18 @@ class PageBuilder
             'id' => null,
             'css' => null,
             'charset' => 'UTF-8',
-            'title' => $this->settingsHelper->getSettingsParameter('general.title'),
+            'title' => $title = $this->settingsHelper->getSettingsParameter('general.title'),
             'locale' => $this->settingsHelper->getSettingsParameter('general.locale'),
             'metas' => array(
-                'keywords' => $this->settingsHelper->getSettingsParameter('general.meta_keywords'),
-                'description' => $this->settingsHelper->getSettingsParameter('general.meta_description'),
+                'keywords' => $keywords = $this->settingsHelper->getSettingsParameter('general.meta_keywords'),
+                'description' => $description = $this->settingsHelper->getSettingsParameter('general.meta_description'),
+                'robots' => $description = $this->settingsHelper->getSettingsParameter('general.meta_robots'),
             ),
             'blocks' => null,
             'styles' => null,
             'scripts' => null,
-            'keywords' => null,
-            'decription' => null,
+            'keywords' => $keywords,
+            'description' => $description,
             'breadcrumbs' => null,
             'reset_script' => false,
             'reset_style' => false,
@@ -133,6 +174,7 @@ class PageBuilder
             'reset_breadcrumb' => false,
             'heading' => null,
             'icon' => null,
+            'canonical' => null,
             'inited' => false,
         ));
 

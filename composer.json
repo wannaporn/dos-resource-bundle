@@ -18,7 +18,8 @@
         "sylius/money-bundle": "0.15.*@dev",
         "symfony/yaml": "~2.5",
         "twig/extensions": "^1.2",
-        "cocur/slugify": "~1.2"
+        "cocur/slugify": "~1.2",
+        "sonata-project/seo-bundle": "~2.0"
     },
     "require-dev": {
         "liil/kint": "1.0",
