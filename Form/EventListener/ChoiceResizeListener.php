@@ -16,7 +16,7 @@ class ChoiceResizeListener
      *
      * @return ChoiceResizeListener
      */
-    public function create(FormBuilderInterface $builder, array $configs)
+    public static function create(FormBuilderInterface $builder, array $configs)
     {
         return new self($builder, $configs);
     }
