@@ -11,7 +11,19 @@ use Symfony\Component\Form\FormEvents;
 class ChoiceResizeListener
 {
     /**
-     * {@inheritdoc}
+     * @param FormBuilderInterface $builder
+     * @param array $configs
+     *
+     * @return ChoiceResizeListener
+     */
+    public function create(FormBuilderInterface $builder, array $configs)
+    {
+        return new self($builder, $configs);
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $configs
      */
     public function __construct(FormBuilderInterface $builder, array $configs)
     {
