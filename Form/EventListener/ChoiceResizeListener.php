@@ -2,6 +2,7 @@
 
 namespace DoS\ResourceBundle\Form\EventListener;
 
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,14 +39,13 @@ class ChoiceResizeListener
                 $form = $event->getForm();
 
                 foreach($configs as $property => $config) {
-                    $depended = $config['depended'];
-
-                    if (!is_array($depended)) {
-                        $depended = array('partner' => $depended);
+                    if (true === $depended = $this->prepare($config, 'self')) {
+                        $this->resizeBySelf($event, $property, $config);
+                        continue;
                     }
 
                     if ($form->get($partnerName = $depended['partner'])->getData()) {
-                        return;
+                        continue;
                     }
 
                     if ($data = $form->get($property)->getData()) {
@@ -59,6 +59,27 @@ class ChoiceResizeListener
     }
 
     /**
+     * @param array $config
+     * @param $selfCheck
+     *
+     * @return array|bool
+     */
+    private function prepare(array $config, $selfCheck)
+    {
+        $depended = $config['depended'];
+
+        if (!is_array($depended)) {
+            $depended = array('partner' => $depended);
+        }
+
+        if ($depended['partner'] === $selfCheck) {
+            return true;
+        }
+
+        return $depended;
+    }
+
+    /**
      * @param FormEvent $event
      * @param array $configs
      */
@@ -66,6 +87,7 @@ class ChoiceResizeListener
     {
         foreach($configs as $property => $config) {
             $this->resize($event, $property, $config);
+            $this->resizeBySelf($event, $property, $config);
         }
     }
 
@@ -76,15 +98,12 @@ class ChoiceResizeListener
      */
     private function resize(FormEvent $event, $property, array $config)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
-
-        $depended = $config['depended'];
-
-        if (!is_array($depended)) {
-            $depended = array('partner' => $depended);
+        if (true === $depended = $this->prepare($config, 'self')) {
+            return;
         }
 
+        $form = $event->getForm();
+        $data = $event->getData();
         $repository = isset($depended['repository']) ? $depended['repository'] : null;
         $partner = $form->get($partnerName = $depended['partner']);
 
@@ -123,6 +142,57 @@ class ChoiceResizeListener
                     ->createQueryBuilder('o')
                     ->where(sprintf('o.%s = :partnerData', $partnerName))
                     ->setParameter('partnerData', $partnerData)
+                ;
+            }
+        )));
+    }
+
+    /**
+     * @param FormEvent $event
+     * @param $property
+     * @param array $config
+     */
+    private function resizeBySelf(FormEvent $event, $property, array $config)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if (true !== $depended = $this->prepare($config, 'self')) {
+            return;
+        }
+
+        if (is_array($data) && empty($data)) {
+            return;
+        }
+
+        if (is_array($data)) {
+            $ids = (array) $data[$property];
+        } else {
+            $ids = call_user_func_array(array($data, 'get'.$property), array());
+            if ($ids instanceof Collection) {
+                $ids = $ids->toArray();
+            }
+        }
+
+        if (empty($ids)) {
+            return;
+        }
+
+        $repository = isset($depended['repository']) ? $depended['repository'] : null;
+        unset($config['options']['choices']);
+
+        $form->remove($property);
+        $form->add($property, $config['type'], array_merge($config['options'], array(
+            'query_builder' => function(EntityRepository $er) use ($ids, $repository) {
+                if ($repository) {
+                    return call_user_func_array(array($er, $repository), array($ids));
+                }
+
+                $qb = $er->createQueryBuilder('o');
+
+                return $qb
+                    ->where($qb->expr()->in('o.id', ':ids'))
+                    ->setParameter('ids', $ids)
                 ;
             }
         )));
