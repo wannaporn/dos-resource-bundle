@@ -94,7 +94,15 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
                     $definition->setArguments(array(
                         $serviceClasses['model'],
                         new Parameter(sprintf('%s.validation_group.%s%s', $this->applicationName, $model, $suffix)),
+                        $alias
                     ));
+                }
+
+                if (method_exists($class, 'setObjectManager')) {
+                    $definition->addMethodCall(
+                        'setObjectManager',
+                        array(new Reference(sprintf('%s.manager.%s', $this->applicationName, $model)))
+                    );
                 }
 
                 $definition->addTag('form.type', array('alias' => $alias));

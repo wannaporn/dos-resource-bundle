@@ -284,8 +284,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         }
 
         if (!isset($classes['choice'])) {
-            $classes['choice'] = 'Sylius\Bundle\ResourceBundle\Form\Type\ResourceChoiceType';
-            //$classes['choice'] = '%dos.form.type.choice.default.class%';
+            $classes['choice'] = 'DoS\ResourceBundle\Form\Type\ResourceChoiceType';
         }
 
         $node

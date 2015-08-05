@@ -7,7 +7,7 @@ parameters:
     dos.listener.sylius_translator_replace.class: DoS\ResourceBundle\EventListener\ReplaceSyliusTrans
     dos.listener.uuid_generator.class: DoS\ResourceBundle\EventListener\UuidGeneratorListener
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
-    dos.originator.class: Sylius\Component\Originator\Originator\Originator
+    dos.originator.class: DoS\ResourceBundle\Originator\Originator
     dos.templating.page_builder.class: DoS\ResourceBundle\Templating\PageBuilder
     dos.rest.view_handler.class: DoS\ResourceBundle\Rest\ViewHandler
 
