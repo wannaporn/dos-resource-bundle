@@ -21,6 +21,8 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
             $container->setParameter('dos.form.factory.override_pattern', $config['form_factory']['pattern']);
             $container->setParameter('dos.form.factory.override_replacement', $config['form_factory']['replacement']);
         }
+
+        $container->setParameter('dos.slugify.reg_exp', $config['slugify']['reg_exp']);
     }
 
     /**
@@ -33,6 +35,8 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
         $config = $this->processConfiguration(new Configuration(), $configs);
         // remove dos_resource config before append to sylius_resource.
         unset($config['form_factory']);
+        unset($config['slugify']);
+
         $container->prependExtensionConfig('sylius_resource', $config);
 
         $container->setParameter('dos.locale_traditional', true);

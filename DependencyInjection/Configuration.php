@@ -17,8 +17,28 @@ class Configuration extends AbstractResourceConfiguration
 
         $this->addSettingsSection($rootNode);
         $this->addFormFactoryNode($rootNode);
+        $this->addSlugifyNode($rootNode);
 
         return $treeBuilder;
+    }
+
+    /**
+     * Adds `settings` section.
+     *
+     * @param $node
+     */
+    private function addSlugifyNode(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('slugify')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->variableNode('reg_exp')->defaultValue('/([^A-Za-z0-9\p{Thai}]|-)+/u')->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 
     /**
