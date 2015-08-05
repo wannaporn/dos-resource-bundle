@@ -154,12 +154,12 @@ class ChoiceResizeListener
      */
     private function resizeBySelf(FormEvent $event, $property, array $config)
     {
-        $form = $event->getForm();
-        $data = $event->getData();
-
         if (true !== $depended = $this->prepare($config, 'self')) {
             return;
         }
+
+        $form = $event->getForm();
+        $data = $event->getData();
 
         if (is_array($data) && empty($data)) {
             return;
