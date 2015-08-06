@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ChoiceResizeListener
 {
@@ -119,8 +120,9 @@ class ChoiceResizeListener
             $partnerData = $em->getRepository($partnerOptions['class'])->find($partnerData);
         } else {
             if (!$partnerData = $partner->getData()) {
-                if($fieldData = call_user_func_array(array($data, 'get' . $property), array())) {
-                    $partnerData = call_user_func_array(array($fieldData, 'get' . $partnerName), array());
+                $accessor = PropertyAccess::createPropertyAccessor();
+                if($fieldData = $accessor->getValue($data, $property)) {
+                    $partnerData = $accessor->getValue($fieldData, $partnerName);
                 }
             }
 
@@ -137,6 +139,9 @@ class ChoiceResizeListener
                 if ($repository) {
                     return call_user_func_array(array($er, $repository), array($partnerData));
                 }
+
+                $partnerNames = explode('.', $partnerName);
+                $partnerName = array_pop($partnerNames);
 
                 return $er
                     ->createQueryBuilder('o')
