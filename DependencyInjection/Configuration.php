@@ -34,6 +34,7 @@ class Configuration extends AbstractResourceConfiguration
                 ->arrayNode('slugify')
                     ->addDefaultsIfNotSet()
                     ->children()
+                        ->booleanNode('lowercase')->defaultFalse()->end()
                         ->variableNode('reg_exp')->defaultValue('/([^A-Za-z0-9\p{Thai}]|-)+/u')->end()
                     ->end()
                 ->end()

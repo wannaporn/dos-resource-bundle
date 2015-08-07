@@ -23,6 +23,7 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
         }
 
         $container->setParameter('dos.slugify.reg_exp', $config['slugify']['reg_exp']);
+        $container->setParameter('dos.slugify.lowercase', $config['slugify']['lowercase']);
     }
 
     /**

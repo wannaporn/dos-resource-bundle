@@ -17,8 +17,13 @@ class SlugifyPass implements CompilerPassInterface
         }
 
         $definition = $container->getDefinition('cocur_slugify');
+
         $definition->addMethodCall('setRegExp', array(
             $container->getParameter('dos.slugify.reg_exp')
+        ));
+
+        $definition->addMethodCall('setOptions', array(
+            array('lowercase' => $container->getParameter('dos.slugify.lowercase'))
         ));
     }
 }
