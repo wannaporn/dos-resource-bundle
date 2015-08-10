@@ -72,6 +72,7 @@ class PageBuilder
 
         if ($seo = $this->seoPage) {
             $seo->setTitle($this->options['title']);
+            $seo->addHtmlAttributes('lang', $this->options['locale']);
 
             if ($this->options['canonical']) {
                 $seo->setLinkCanonical($this->options['canonical']);
