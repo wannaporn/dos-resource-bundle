@@ -146,5 +146,8 @@ services:
 
     dos.twig.extension.routing:
      class: %dos.class.twig.extension.routing%
+     arguments:
+        - @router
+        - @slugify
      tags:
          - { name: twig.extension }
