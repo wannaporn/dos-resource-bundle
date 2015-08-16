@@ -19,6 +19,22 @@ class EntityRepository extends BaseEntityRepository
     }
 
     /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getManager()
+    {
+        return $this->_em;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityName()
+    {
+        return $this->_entityName;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function createUserList(array $criteria = null, array $orderBy = null)
