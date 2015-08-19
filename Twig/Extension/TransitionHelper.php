@@ -2,7 +2,7 @@
 
 namespace DoS\ResourceBundle\Twig\Extension;
 
-abstract class StateMachineHelper extends \Twig_Extension
+abstract class TransitionHelper extends \Twig_Extension
 {
     /**
      * @var array
