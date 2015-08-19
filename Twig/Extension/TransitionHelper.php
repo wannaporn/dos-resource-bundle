@@ -2,6 +2,9 @@
 
 namespace DoS\ResourceBundle\Twig\Extension;
 
+use DoS\ResourceBundle\Model\StatableInterface;
+use SM\Factory\Factory;
+
 abstract class TransitionHelper extends \Twig_Extension
 {
     /**
@@ -38,6 +41,11 @@ abstract class TransitionHelper extends \Twig_Extension
     protected $positiveColors = array();
 
     /**
+     * @var Factory
+     */
+    protected $factory;
+
+    /**
      * @param array $options
      */
     public function __construct(array $options = array())
@@ -67,6 +75,28 @@ abstract class TransitionHelper extends \Twig_Extension
         }
     }
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('ts_is', array($this, 'isState')),
+            new \Twig_SimpleFunction('ts_state', array($this, 'getState')),
+            new \Twig_SimpleFunction('ts_color', array($this, 'getStateColor')),
+            new \Twig_SimpleFunction('ts_transitions', array($this, 'getPosibleTransitions')),
+        );
+    }
+
+    /**
+     * @param Factory $factory
+     */
+    public function setFactory(Factory $factory)
+    {
+        $this->factory = $factory;
+    }
+
     /**
      * Get transition translator key.
      *
@@ -90,7 +120,8 @@ abstract class TransitionHelper extends \Twig_Extension
     {
         return empty($this->colors['transition'][$transition])
             ? $this->options['transition']['default_color']
-            : $this->colors['transition'][$transition];
+            : $this->colors['transition'][$transition]
+        ;
     }
 
     /**
@@ -130,27 +161,36 @@ abstract class TransitionHelper extends \Twig_Extension
     /**
      * Get state translator key.
      *
-     * @param string $state
+     * @param string|object $state
      *
      * @return string
      */
     public function getState($state)
     {
+        if ($state instanceof StatableInterface) {
+            $state = $state->getState();
+        }
+
         return $this->options['state']['translation'].'.'.$state;
     }
 
     /**
      * Get state color.
      *
-     * @param string $state
+     * @param string|object $state
      *
      * @return string
      */
     public function getStateColor($state)
     {
+        if ($state instanceof StatableInterface) {
+            $state = $state->getState();
+        }
+
         return empty($this->colors['state'][$state])
             ? $this->options['state']['default_color']
-            : $this->colors['state'][$state];
+            : $this->colors['state'][$state]
+        ;
     }
 
     /**
@@ -171,6 +211,7 @@ abstract class TransitionHelper extends \Twig_Extension
      * @param string $prefix
      *
      * @return array
+     * @deprecated implement StatableInterface in client class.
      */
     protected function getTransitions($class, $prefix = 'TS')
     {
@@ -184,5 +225,60 @@ abstract class TransitionHelper extends \Twig_Extension
         }
 
         return $transitions;
+    }
+
+    /**
+     * Get all of posible transitions.
+     *
+     * @param StatableInterface $object
+     *
+     * @return array|null
+     *
+     * @throws \SM\SMException
+     */
+    public function getPosibleTransitions(StatableInterface $object =  null)
+    {
+        if (empty($object)) {
+            return;
+        }
+
+        $sm = $this->factory->get($object, $object->getStateGraph());
+
+        if (empty($sm)) {
+            return;
+        }
+
+        $tasks = array();
+
+        foreach ($object->getStateTransitions() as $transition) {
+            if ($sm->can($transition)) {
+
+                $color = $this->getTransitionColor($transition);
+                $tasks[] = array(
+                    'id' => $object->getId(),
+                    'name' => $transition,
+                    'color' => $color,
+                    'graph' => $object->getStateGraph(),
+                    'label' => $this->getTransition($transition),
+                    'negative' => $this->isNegativeColor($color, 'transition'),
+                    'positive' => $this->isPositiveColor($color, 'transition'),
+                );
+            }
+        }
+
+        return empty($tasks) ? null : $tasks;
+    }
+
+    /**
+     * Compare state.
+     *
+     * @param array|string $stateCompare State(s) to compare
+     * @param StatableInterface $object
+     *
+     * @return bool
+     */
+    public function isState($stateCompare, StatableInterface $object)
+    {
+        return in_array(strtolower($object->getState()), (array) $stateCompare);
     }
 }
