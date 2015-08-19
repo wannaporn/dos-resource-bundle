@@ -4,6 +4,8 @@ namespace DoS\ResourceBundle\Twig\Extension;
 
 use DoS\ResourceBundle\Model\StatableInterface;
 use SM\Factory\Factory;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\Routing\RouterInterface;
 
 abstract class TransitionHelper extends \Twig_Extension
 {
@@ -44,6 +46,17 @@ abstract class TransitionHelper extends \Twig_Extension
      * @var Factory
      */
     protected $factory;
+
+
+    /**
+     * @var RouterInterface
+     */
+    protected $router;
+
+    /**
+     * @var string
+     */
+    protected $updateStateRouting;
 
     /**
      * @param array $options
@@ -86,6 +99,7 @@ abstract class TransitionHelper extends \Twig_Extension
             new \Twig_SimpleFunction('ts_state', array($this, 'getState')),
             new \Twig_SimpleFunction('ts_color', array($this, 'getStateColor')),
             new \Twig_SimpleFunction('ts_transitions', array($this, 'getPosibleTransitions')),
+            new \Twig_SimpleFunction('ts_routing', array($this, 'getUpdateStateRouting')),
         );
     }
 
@@ -95,6 +109,41 @@ abstract class TransitionHelper extends \Twig_Extension
     public function setFactory(Factory $factory)
     {
         $this->factory = $factory;
+    }
+
+    /**
+     * @param RouterInterface $router
+     */
+    public function setRouter(RouterInterface $router)
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * @param string $updateStateRouting
+     */
+    public function setUpdateStateRouting($updateStateRouting)
+    {
+        $this->updateStateRouting = $updateStateRouting;
+    }
+
+    /**
+     * Get default pattern, can override.
+     *
+     * @param StatableInterface $object
+     * @param string $transition
+     * @param string $identifier
+     *
+     * @return string
+     */
+    public function getUpdateStateRouting(StatableInterface $object, $transition, $identifier = 'id')
+    {
+        $accessor = PropertyAccess::createPropertyAccessor();
+        return $this->router->generate($this->updateStateRouting, array(
+            'id' => $accessor->getValue($object, $identifier),
+            'transtion' => $transition,
+            'graph' => $object->getStateGraph(),
+        ));
     }
 
     /**
@@ -231,12 +280,13 @@ abstract class TransitionHelper extends \Twig_Extension
      * Get all of posible transitions.
      *
      * @param StatableInterface $object
+     * @param string $objectIdentifier
      *
      * @return array|null
      *
      * @throws \SM\SMException
      */
-    public function getPosibleTransitions(StatableInterface $object =  null)
+    public function getPosibleTransitions(StatableInterface $object =  null, $objectIdentifier = 'id')
     {
         if (empty($object)) {
             return;
@@ -249,13 +299,14 @@ abstract class TransitionHelper extends \Twig_Extension
         }
 
         $tasks = array();
+        $accessor = PropertyAccess::createPropertyAccessor();
 
         foreach ($object->getStateTransitions() as $transition) {
             if ($sm->can($transition)) {
 
                 $color = $this->getTransitionColor($transition);
                 $tasks[] = array(
-                    'id' => $object->getId(),
+                    'id' => $accessor->getValue($object, $objectIdentifier),
                     'name' => $transition,
                     'color' => $color,
                     'graph' => $object->getStateGraph(),
