@@ -5,7 +5,7 @@ namespace DoS\ResourceBundle\Twig\Extension;
 use DoS\ResourceBundle\Model\StatableInterface;
 use SM\Factory\Factory;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 abstract class TransitionHelper extends \Twig_Extension
 {
@@ -47,16 +47,10 @@ abstract class TransitionHelper extends \Twig_Extension
      */
     protected $factory;
 
-
     /**
-     * @var RouterInterface
+     * @var TranslatorInterface
      */
-    protected $router;
-
-    /**
-     * @var string
-     */
-    protected $updateStateRouting;
+    protected $translator;
 
     /**
      * @param array $options
@@ -88,7 +82,6 @@ abstract class TransitionHelper extends \Twig_Extension
         }
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -99,7 +92,8 @@ abstract class TransitionHelper extends \Twig_Extension
             new \Twig_SimpleFunction('ts_state', array($this, 'getState')),
             new \Twig_SimpleFunction('ts_color', array($this, 'getStateColor')),
             new \Twig_SimpleFunction('ts_transitions', array($this, 'getPosibleTransitions')),
-            new \Twig_SimpleFunction('ts_routing', array($this, 'getUpdateStateRouting')),
+            new \Twig_SimpleFunction('ts_trans_s', array($this, 'getTranslationState')),
+            new \Twig_SimpleFunction('ts_trans_t', array($this, 'getTranslationTransition')),
         );
     }
 
@@ -112,38 +106,45 @@ abstract class TransitionHelper extends \Twig_Extension
     }
 
     /**
-     * @param RouterInterface $router
+     * @param TranslatorInterface $translator
      */
-    public function setRouter(RouterInterface $router)
+    public function setTranslator(TranslatorInterface $translator)
     {
-        $this->router = $router;
+        $this->translator = $translator;
     }
 
     /**
-     * @param string $updateStateRouting
+     * @param string|StatableInterface $key
+     * @param string $type
+     * @return string
      */
-    public function setUpdateStateRouting($updateStateRouting)
+    public function getTranslation($key, $type = 'state')
     {
-        $this->updateStateRouting = $updateStateRouting;
+        if (strtolower($type) === 'state') {
+            return $this->translator->trans($this->getState($key));
+        }
+
+        return $this->translator->trans($this->getTransition($key));
     }
 
     /**
-     * Get default pattern, can override.
-     *
-     * @param StatableInterface $object
-     * @param string $transition
-     * @param string $identifier
+     * @param string|StatableInterface $keyOrObject
      *
      * @return string
      */
-    public function getUpdateStateRouting(StatableInterface $object, $transition, $identifier = 'id')
+    public function getTranslationState($keyOrObject)
     {
-        $accessor = PropertyAccess::createPropertyAccessor();
-        return $this->router->generate($this->updateStateRouting, array(
-            'id' => $accessor->getValue($object, $identifier),
-            'transtion' => $transition,
-            'graph' => $object->getStateGraph(),
-        ));
+        return $this->getTranslation($keyOrObject, 'state');
+    }
+
+    /**
+     * @param $key
+     *
+     * @return string
+     */
+    public function getTranslationTransition($key)
+    {
+        return $this->getTranslation($key, 'transition');
     }
 
     /**
