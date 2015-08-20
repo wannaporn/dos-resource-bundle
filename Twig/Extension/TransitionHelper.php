@@ -91,6 +91,7 @@ abstract class TransitionHelper extends \Twig_Extension
             new \Twig_SimpleFunction('ts_is', array($this, 'isState')),
             new \Twig_SimpleFunction('ts_state', array($this, 'getState')),
             new \Twig_SimpleFunction('ts_color', array($this, 'getStateColor')),
+            new \Twig_SimpleFunction('ts_color_t', array($this, 'getTransitionColor')),
             new \Twig_SimpleFunction('ts_transitions', array($this, 'getPosibleTransitions')),
             new \Twig_SimpleFunction('ts_trans_s', array($this, 'getTranslationState')),
             new \Twig_SimpleFunction('ts_trans_t', array($this, 'getTranslationTransition')),
