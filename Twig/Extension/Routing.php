@@ -34,6 +34,7 @@ class Routing extends \Twig_Extension
     {
         return array(
             new \Twig_SimpleFunction('ui_resource_route', array($this, 'generateObjectUrl')),
+            new \Twig_SimpleFunction('ui_route', array($this, 'generateObjectUrl')),
         );
     }
 
