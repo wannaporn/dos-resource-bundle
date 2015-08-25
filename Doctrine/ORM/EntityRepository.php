@@ -35,6 +35,51 @@ class EntityRepository extends BaseEntityRepository
     }
 
     /**
+     * @param QueryBuilder $queryBuilder
+     * @param $value
+     * @param $properties
+     */
+    protected function applySearchCriteria(QueryBuilder $queryBuilder, $value, $properties)
+    {
+        if (empty($value) || empty($properties)) {
+            return;
+        }
+
+        // TODO: use SearchBundle
+        $xor = array();
+        $properties = is_array($properties) ? $properties : array($properties);
+
+        foreach($properties as $field) {
+            if ($assoc = $this->addAssociation($queryBuilder, $field, false)) {
+                $fieldPath = sprintf('%s.%s', $assoc[0], $holder = $assoc[1]);
+            } else {
+                $fieldPath = $this->getPropertyName($holder = $field);
+            }
+
+            $xor[] = $this->expr()->like($fieldPath, sprintf(':%s', $holder));
+            $queryBuilder->setParameter($holder, '%'.$value.'%');
+        }
+
+        $queryBuilder->andWhere(call_user_func_array(array($this->expr(), 'orX'), $xor));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyCriteria(QueryBuilder $queryBuilder, array $criteria = array())
+    {
+        // TODO: can be config `_search_` key
+        if (array_key_exists('_search_', $criteria)) {
+            $search = $criteria['_search_'];
+            unset($criteria['_search_']);
+
+            $this->applySearchCriteria($queryBuilder, $search['value'], $search['properties']);
+        }
+
+        parent::applyCriteria($queryBuilder, $criteria);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function createUserList(array $criteria = null, array $orderBy = null)
@@ -69,25 +114,25 @@ class EntityRepository extends BaseEntityRepository
         }
 
         foreach ($sorting as $property => $order) {
-            if (!empty($order) && !$this->addAssociateOrder($property, $order, $queryBuilder)) {
+            if (!empty($order) && !$this->addAssociateOrder($queryBuilder, $property, $order)) {
                 $queryBuilder->addOrderBy($this->getPropertyName($property), $order);
             }
         }
     }
 
     /**
-     * @param string       $name
-     * @param string       $order
      * @param QueryBuilder $queryBuilder
+     * @param $propertyPath
+     * @param $usingHidden
      *
-     * @return bool
+     * @return bool|string
      */
-    private function addAssociateOrder($name, $order, QueryBuilder $queryBuilder)
+    private function addAssociation(QueryBuilder $queryBuilder, $propertyPath, $usingHidden = true)
     {
         // simple join
-        if (false !== strpos($name, '.')) {
+        if (false !== strpos($propertyPath, '.')) {
             // single level
-            list($key, $fild) = explode('.', $name);
+            list($key, $field) = explode('.', $propertyPath);
 
             if ($key !== $this->getAlias()) {
                 $associations = $this->getClassMetadata()->getAssociationMappings();
@@ -96,18 +141,39 @@ class EntityRepository extends BaseEntityRepository
                     throw new NotAcceptableHttpException('Cannot order associtated Many-To-Many object type.');
                 }
 
-                $join = $this->getAlias().'.'.$key;
+                $join = $this->getPropertyName($key);
                 $alias = '_'.$key;
-                $name = '__'.$key;
+                $hidden = '__'.$key;
 
                 $queryBuilder
                     ->join($join, $alias)
-                    ->addSelect(sprintf('%s.%s AS HIDDEN %s', $alias, $fild, $name))
-                    ->orderBy($name, $order)
                 ;
 
-                return true;
+                if ($usingHidden) {
+                    $queryBuilder
+                        ->addSelect(sprintf('%s.%s AS HIDDEN %s', $alias, $field, $hidden))
+                    ;
+                }
+
+                return array($alias, $field , $hidden);
             }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param QueryBuilder $queryBuilder
+     * @param string       $name
+     * @param string       $order
+     *
+     * @return bool|string
+     */
+    private function addAssociateOrder(QueryBuilder $queryBuilder, $name, $order)
+    {
+        if ($hidden = $this->addAssociation($queryBuilder, $name)) {
+            $queryBuilder->orderBy($name, $order);
+            return $hidden;
         }
 
         return false;
