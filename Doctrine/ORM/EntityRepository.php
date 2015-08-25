@@ -56,8 +56,8 @@ class EntityRepository extends BaseEntityRepository
                 $fieldPath = $this->getPropertyName($holder = $field);
             }
 
-            $xor[] = $this->expr()->like($fieldPath, sprintf(':%s', $holder));
-            $queryBuilder->setParameter($holder, '%'.$value.'%');
+            $xor[] = $this->expr()->like(sprintf('LOWER(%s)', $fieldPath), sprintf(':%s', $holder));
+            $queryBuilder->setParameter($holder, '%'.strtolower($value).'%');
         }
 
         $queryBuilder->andWhere(call_user_func_array(array($this->expr(), 'orX'), $xor));
