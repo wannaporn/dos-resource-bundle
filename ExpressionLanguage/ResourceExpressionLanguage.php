@@ -24,7 +24,7 @@ class ResourceExpressionLanguage extends ExpressionLanguage
         );
 
         $this->register(
-            'paginate',
+            'getQueryParam',
             function ($limitKey, $default) {
                 return sprintf('$this->get("request")->get(%s, %s)', $limitKey, $default);
             },
