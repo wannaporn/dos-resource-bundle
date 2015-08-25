@@ -22,5 +22,15 @@ class ResourceExpressionLanguage extends ExpressionLanguage
                 return $variables['container']->get('security.token_storage')->getToken()->getUser();
             }
         );
+
+        $this->register(
+            'paginate',
+            function ($limitKey, $default) {
+                return sprintf('$this->get("request")->get(%s, %s)', $limitKey, $default);
+            },
+            function (array $variables, $limitKey, $default) {
+                return $variables['container']->get('request')->get($limitKey, $default);
+            }
+        );
     }
 }
