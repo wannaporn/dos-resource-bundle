@@ -3,6 +3,7 @@
 namespace DoS\ResourceBundle\Form\Type;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\Common\Persistence\ObjectRepository;
 use Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType as BaseAbstractResourceType;
 
 abstract class AbstractResourceType extends BaseAbstractResourceType
@@ -18,11 +19,17 @@ abstract class AbstractResourceType extends BaseAbstractResourceType
     protected $manager;
 
     /**
+     * @var ObjectRepository
+     */
+    protected $repository;
+
+    /**
      * @param ObjectManager|null $manager
      */
     public function setObjectManager(ObjectManager $manager = null)
     {
         $this->manager = $manager;
+        $this->repository = $manager->getRepository($this->dataClass);
     }
 
     /**
