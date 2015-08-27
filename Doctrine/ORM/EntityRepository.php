@@ -13,7 +13,7 @@ class EntityRepository extends BaseEntityRepository
     /**
      * @return \Doctrine\ORM\Query\Expr
      */
-    protected function expr()
+    public function expr()
     {
         return $this->_em->getExpressionBuilder();
     }
