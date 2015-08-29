@@ -1,6 +1,6 @@
 <?php
 
-namespace DoS\ResourceBundle;
+namespace DoS\ResourceBundle\Provider;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoS\ResourceBundle\Doctrine\ORM\EntityRepository;
