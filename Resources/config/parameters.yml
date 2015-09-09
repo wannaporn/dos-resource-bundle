@@ -4,3 +4,4 @@ parameters:
     dos.repository.orm.default.class: DoS\ResourceBundle\Doctrine\ORM\EntityRepository
     dos.form.type.choice.default.class: %sylius.form.type.resource_choice.class%
     dos.expression_language.class: DoS\ResourceBundle\ExpressionLanguage\ResourceExpressionLanguage
+    dos.resource_configuration.class: DoS\ResourceBundle\Controller\Configuration
