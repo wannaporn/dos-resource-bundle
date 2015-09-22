@@ -4,11 +4,12 @@ namespace DoS\ResourceBundle\Doctrine\ORM;
 
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
+use DoS\ResourceBundle\Doctrine\RepositoryInterface;
 use Sylius\Bundle\ResourceBundle\Doctrine\ORM\EntityRepository as BaseEntityRepository;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class EntityRepository extends BaseEntityRepository
+class EntityRepository extends BaseEntityRepository implements RepositoryInterface
 {
     /**
      * @return \Doctrine\ORM\Query\Expr

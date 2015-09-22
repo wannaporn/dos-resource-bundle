@@ -3,8 +3,8 @@
 namespace DoS\ResourceBundle\Provider;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use DoS\ResourceBundle\Doctrine\ORM\EntityRepository;
-use Sylius\Component\Resource\Repository\RepositoryInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use DoS\ResourceBundle\Doctrine\RepositoryInterface;
 
 /**
  * @author liverbool <nukboon@gmail.com>
@@ -12,7 +12,7 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 abstract class AbstractProvider
 {
     /**
-     * @var ObjectManager
+     * @var ObjectManager|DocumentManager
      */
     protected $manager;
 
@@ -26,7 +26,7 @@ abstract class AbstractProvider
      */
     protected $repository;
 
-    public function __construct(EntityRepository $repository)
+    public function __construct(RepositoryInterface $repository)
     {
         $this->repository = $repository;
         $this->manager = $repository->getManager();
