@@ -76,9 +76,9 @@ class Factory extends FormFactory
             } elseif (!$type instanceof ResolvedFormTypeInterface) {
                 throw new UnexpectedTypeException($type, 'string, Symfony\Component\Form\ResolvedFormTypeInterface or Symfony\Component\Form\FormTypeInterface');
             }
-
-            $builder = $type->createBuilder($this, $name, $options);
         }
+
+        $builder = $type->createBuilder($this, $name, $options);
 
         // set default user
         $builder->setAttribute('user_aware', $this->getUser());
