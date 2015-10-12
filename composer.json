@@ -27,10 +27,7 @@
         "phpspec/phpspec": "~2.1"
     },
     "autoload": {
-        "psr-4": { "DoS\\ResourceBundle\\": "" },
-        "classmap": [
-            "Sylius/"
-        ]
+        "psr-4": { "DoS\\ResourceBundle\\": "" }
     },
     "autoload-dev": {
         "psr-4": { "DoS\\ResourceBundle\\spec\\": "spec/" }
