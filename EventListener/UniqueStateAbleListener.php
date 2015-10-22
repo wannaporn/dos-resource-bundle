@@ -16,12 +16,18 @@ class UniqueStateAbleListener implements EventSubscriber
         $object = $event->getObject();
 
         if ($object instanceof UniqueStateAbleInterface && $object->getUniqueState()) {
-            $event->getEntityManager()->createQueryBuilder()
+            // with this approach `entities` will not take there's events.
+            $em = $event->getEntityManager();
+            $id = $em->getClassMetadata(get_class($object))->identifier[0];
+
+            $em->createQueryBuilder()
                 ->update(get_class($object), 'o')
                 ->set('o.' . $object->getUniqueStateField(), ':update')
                 ->where('o.' . $object->getUniqueStateField() . ' = :where')
+                ->andWhere('o.' . $id . ' <> :self')
                 ->setParameter('update', false)
                 ->setParameter('where', true)
+                ->setParameter('self', $object)
                 ->getQuery()->execute()
             ;
         }
