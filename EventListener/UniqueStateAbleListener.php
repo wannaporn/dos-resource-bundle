@@ -11,7 +11,7 @@ class UniqueStateAbleListener implements EventSubscriber
     /**
      * {@inheritdoc}
      */
-    public function prePersist(LifecycleEventArgs $event)
+    public function postPersist(LifecycleEventArgs $event)
     {
         $object = $event->getObject();
 
@@ -36,9 +36,9 @@ class UniqueStateAbleListener implements EventSubscriber
     /**
      * {@inheritdoc}
      */
-    public function preUpdate(LifecycleEventArgs $event)
+    public function postUpdate(LifecycleEventArgs $event)
     {
-        $this->prePersist($event);
+        $this->postPersist($event);
     }
 
     /**
@@ -47,8 +47,8 @@ class UniqueStateAbleListener implements EventSubscriber
     public function getSubscribedEvents()
     {
         return array(
-            'prePersist',
-            'preUpdate',
+            'postPersist',
+            'postUpdate',
         );
     }
 }
