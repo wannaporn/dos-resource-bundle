@@ -161,7 +161,7 @@ class PageBuilder
             'metas' => array(
                 'keywords' => $keywords = $this->settingsHelper->getSettingsParameter('general.meta_keywords'),
                 'description' => $description = $this->settingsHelper->getSettingsParameter('general.meta_description'),
-                'robots' => $description = $this->settingsHelper->getSettingsParameter('general.meta_robots'),
+                'robots' => $this->settingsHelper->getSettingsParameter('general.meta_robots'),
             ),
             'blocks' => null,
             'styles' => null,
