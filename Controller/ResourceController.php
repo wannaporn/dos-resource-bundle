@@ -54,7 +54,7 @@ class ResourceController extends BaseResourceController
     {
         $string = is_string($string) ? strtolower($string) : $string;
 
-        if (in_array($string, array(true, 1, '1', 'yes', 'true'))) {
+        if (in_array($string, array(true, 1, '1', 'yes', 'true'), true)) {
             return true;
         }
 
