@@ -203,4 +203,14 @@ class EntityRepository extends BaseEntityRepository implements RepositoryInterfa
             ->createQuery($queryBuilder->getDQL())
             ->execute($parameters);
     }
+
+    /**
+     * @param $entity
+     * @param bool|false $single
+     */
+    public function save($entity, $single = false)
+    {
+        $this->_em->persist($entity);
+        $this->_em->flush($single ? $entity : null);
+    }
 }
