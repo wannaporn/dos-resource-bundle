@@ -206,9 +206,9 @@ class EntityRepository extends BaseEntityRepository implements RepositoryInterfa
 
     /**
      * @param $entity
-     * @param bool|false $single
+     * @param bool|true $single
      */
-    public function save($entity, $single = false)
+    public function save($entity, $single = true)
     {
         $this->_em->persist($entity);
         $this->_em->flush($single ? $entity : null);
