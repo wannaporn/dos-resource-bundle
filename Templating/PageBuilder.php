@@ -156,6 +156,7 @@ class PageBuilder
             'id' => null,
             'css' => null,
             'charset' => 'UTF-8',
+            'domain' => $title = $this->settingsHelper->getSettingsParameter('general.domain'),
             'title' => $title = $this->settingsHelper->getSettingsParameter('general.title'),
             'locale' => $this->settingsHelper->getSettingsParameter('general.locale'),
             'metas' => array(
