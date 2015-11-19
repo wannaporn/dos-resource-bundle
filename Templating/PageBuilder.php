@@ -178,6 +178,7 @@ class PageBuilder
             'icon' => null,
             'canonical' => null,
             'inited' => false,
+            'extras' => array(),
         ));
 
         $resolver->setAllowedTypes(array(
@@ -186,6 +187,7 @@ class PageBuilder
             'icon' => array('null', 'string'),
             'metas' => array('null', 'array'),
             'blocks' => array('null', 'array'),
+            'extras' => array('null', 'array'),
         ));
     }
 }
