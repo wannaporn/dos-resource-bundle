@@ -5,12 +5,12 @@ namespace DoS\ResourceBundle\Provider;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use DoS\ResourceBundle\Doctrine\RepositoryInterface;
-use DoS\ResourceBundle\Factory\ResourceFactoryAware;
+use DoS\ResourceBundle\Factory\FactoryInterface;
 
 /**
  * @author liverbool <nukboon@gmail.com>
  */
-abstract class AbstractProvider extends ResourceFactoryAware
+abstract class AbstractProvider
 {
     /**
      * @var ObjectManager|DocumentManager
@@ -27,9 +27,15 @@ abstract class AbstractProvider extends ResourceFactoryAware
      */
     protected $repository;
 
-    public function __construct(RepositoryInterface $repository)
+    /**
+     * @var FactoryInterface
+     */
+    protected $factory;
+
+    public function __construct(RepositoryInterface $repository, FactoryInterface $factory)
     {
         $this->repository = $repository;
+        $this->factory = $factory;
         $this->manager = $repository->getManager();
         $this->dataClass = $repository->getEntityName();
     }
