@@ -2,8 +2,8 @@
 
 namespace DoS\ResourceBundle\Provider;
 
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ORM\EntityManager;
 use DoS\ResourceBundle\Doctrine\RepositoryInterface;
 use DoS\ResourceBundle\Factory\FactoryInterface;
 
@@ -13,7 +13,7 @@ use DoS\ResourceBundle\Factory\FactoryInterface;
 abstract class AbstractProvider
 {
     /**
-     * @var ObjectManager|DocumentManager
+     * @var EntityManager|DocumentManager
      */
     protected $manager;
 
