@@ -77,6 +77,11 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                     ->defaultValue(isset($defaults['model']) ? $defaults['model'] : null)
                 ->end()
 
+                ->scalarNode('factory')
+                    ->cannotBeEmpty()
+                    ->defaultValue(isset($defaults['factory']) ? $defaults['factory'] : 'DoS\ResourceBundle\Factory\Factory')
+                ->end()
+
                 ->scalarNode('controller')
                     ->defaultValue(isset($defaults['controller']) ? $defaults['controller'] : 'DoS\ResourceBundle\Controller\ResourceController')
                 ->end()
