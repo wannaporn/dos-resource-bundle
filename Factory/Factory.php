@@ -2,6 +2,8 @@
 
 namespace DoS\ResourceBundle\Factory;
 
-class Factory implements FactoryInterface
+use Sylius\Component\Resource\Factory\Factory as BaseFactory;
+
+class Factory extends BaseFactory implements FactoryInterface
 {
 }
