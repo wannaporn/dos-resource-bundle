@@ -36,6 +36,16 @@ class EntityRepository extends BaseEntityRepository implements RepositoryInterfa
     }
 
     /**
+     * @deprecated Remove all resource creation logics to ResourceFactory.
+     */
+    public function createNew()
+    {
+        $className = $this->getClassName();
+
+        return new $className();
+    }
+
+    /**
      * @param QueryBuilder $queryBuilder
      * @param $value
      * @param $properties
