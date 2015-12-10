@@ -92,11 +92,14 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
                 if ('choice' === $name) {
                     $definition->setArguments(array($serviceClasses['model'], $config['driver'], $alias));
                 } else {
-                    $definition->setArguments(array(
-                        $serviceClasses['model'],
-                        new Parameter(sprintf('%s.validation_group.%s%s', $this->applicationName, $model, $suffix)),
-                        $alias
-                    ));
+                    $validationGroupsParameterName = sprintf('%s.validation_group.%s%s', $this->applicationName, $model, $suffix);
+                    $validationGroups = array('Default');
+
+                    if ($container->hasParameter($validationGroupsParameterName)) {
+                        $validationGroups = new Parameter($validationGroupsParameterName);
+                    }
+
+                    $definition->setArguments(array($serviceClasses['model'], $validationGroups, $alias));
                 }
 
                 if (method_exists($class, 'setObjectManager')) {
