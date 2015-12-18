@@ -8,14 +8,10 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Parameter;
-use Symfony\Component\DependencyInjection\Reference;
 
-class AbstractResourceExtension extends BaseAbstractResourceExtension
+abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
 {
     protected $applicationName = 'dos';
 
@@ -35,129 +31,9 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
     );
 
     /**
-     * @var array
-     */
-    private $loaded = array();
-
-    public function configure(
-        array $config,
-        ConfigurationInterface $configuration,
-        ContainerBuilder $container,
-        $configure = self::CONFIGURE_LOADER
-    ) {
-        // TODO: on/off this feature
-        // NOTE! MUST Order UiBundle First! of all bundles
-        $menus = $container->hasParameter('dos.menus')
-            ? $container->getParameter('dos.menus')
-            : array()
-        ;
-
-        $config = parent::configure($config, $configuration, $container, $configure);
-
-        if (isset($this->loaded['menus'])) {
-            $container->setParameter('dos.menus',
-                array_replace_recursive($menus, $container->getParameter('dos.menus'))
-            );
-        }
-
-        return $config;
-    }
-
-    protected function registerFormTypes(array $config, ContainerBuilder $container)
-    {
-        foreach ($config['classes'] as $model => $serviceClasses) {
-            if (!isset($serviceClasses['form']) || !is_array($serviceClasses['form'])) {
-                continue;
-            }
-
-            if ($this->isTranslationSupported() && isset($serviceClasses['translation'])) {
-                $this->registerFormTypes(array('classes' => array(sprintf('%s_translation', $model) => $serviceClasses['translation'])), $container);
-            }
-
-            foreach ($serviceClasses['form'] as $name => $class) {
-                $suffix = ($name === self::DEFAULT_KEY ? '' : sprintf('_%s', $name));
-                $definitionId = sprintf('%s.form.type.%s%s', $this->applicationName, $model, $suffix);
-
-                // check definition already exists.
-                if ($container->hasDefinition($definitionId)) {
-                    continue;
-                }
-
-                $alias = sprintf('%s_%s%s', $this->applicationName, $model, $suffix);
-                // make sure to valid form's name.
-                $alias = preg_replace('/[^a-z0-9_]/i', '_', $alias);
-
-                $definition = new Definition($class);
-
-                if ('choice' === $name) {
-                    $definition->setArguments(array($serviceClasses['model'], $config['driver'], $alias));
-                } else {
-                    $validationGroupsParameterName = sprintf('%s.validation_group.%s%s', $this->applicationName, $model, $suffix);
-                    $validationGroups = array('Default');
-
-                    if ($container->hasParameter($validationGroupsParameterName)) {
-                        $validationGroups = new Parameter($validationGroupsParameterName);
-                    }
-
-                    $definition->setArguments(array($serviceClasses['model'], $validationGroups, $alias));
-                }
-
-                if (method_exists($class, 'setObjectManager')) {
-                    $definition->addMethodCall(
-                        'setObjectManager',
-                        array(new Reference(sprintf('%s.manager.%s', $this->applicationName, $model)))
-                    );
-                }
-
-                $definition->addTag('form.type', array('alias' => $alias));
-                $container->setDefinition($definitionId, $definition);
-            }
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function mapClassParameters(array $classes, ContainerBuilder $container)
-    {
-        $interfaces = array();
-        foreach ($classes as $model => $serviceClasses) {
-            foreach ($serviceClasses as $service => $class) {
-                if ('form' === $service) {
-                    if (!is_array($class)) {
-                        $class = array(self::DEFAULT_KEY => $class);
-                    }
-                    foreach ($class as $suffix => $subClass) {
-                        $container->setParameter(
-                            sprintf(
-                                '%s.form.type.%s%s.class',
-                                $this->applicationName,
-                                $model,
-                                $suffix === self::DEFAULT_KEY ? '' : sprintf('_%s', $suffix)
-                            ),
-                            $subClass
-                        );
-                    }
-                } elseif ('translation' === $service) {
-                    $this->mapClassParameters(array(sprintf('%s_translation', $model) => $class), $container);
-                } else {
-                    $name = sprintf('%s.%s.%s.class', $this->applicationName, $service, $model);
-                    $container->setParameter($name, $class);
-
-                    if ($service === 'interface') {
-                        $interfaces[$name] = sprintf('%s.%s.%s.class', $this->applicationName, 'model', $model);
-                    }
-                }
-            }
-        }
-
-        $container->setParameter($this->getAlias().'_interfaces', $interfaces);
-    }
-
-    /**
      * DoS translate to Dos preventing Container::underscore => do_s_.
      *
-     * @inheritedoc
+     * {@inheritdoc}
      */
     public function getAlias()
     {
@@ -171,41 +47,56 @@ class AbstractResourceExtension extends BaseAbstractResourceExtension
     }
 
     /**
-     * Check existing before load!
-     *
-     * @inheritedoc
+     * {@inheritdoc}
      */
-    protected function loadServiceDefinitions(ContainerBuilder $containerBuilder, $files)
+    public function load(array $config, ContainerBuilder $container)
     {
-        $locator = new FileLocator($this->getDefinitionPath());
+        $config = $this->processConfiguration($this->getBundleConfiguration(), $config);
+        $loader = new YamlFileLoader($container, new FileLocator($this->getConfigDir()));
 
-        $resolver = new LoaderResolver(
-            array(
-                new XmlFileLoader($containerBuilder, $locator),
-                new YamlFileLoader($containerBuilder, $locator),
-            ) + $this->getExtraLoaders($containerBuilder)
-        );
-
-        $loader = new DelegatingLoader($resolver);
-
-        if (!is_array($files)) {
-            $files = array($files);
+        if (empty($config['resources'])) {
+            $config['resources'] = array();
         }
 
-        foreach ($files as $file) {
-            if (file_exists($this->getDefinitionPath() .'/'.$file)) {
-                $loader->load($file);
+        $this->registerResources($this->applicationName, $config['driver'], $config['resources'], $container);
+
+        $interfaces = array();
+
+        foreach($config['resources'] as $model => $resource) {
+            foreach($resource['classes'] as $key => $class) {
+                if ($key === 'interface') {
+                    $name = sprintf('%s.%s.%s.class', $this->applicationName, $key, $model);
+                    $container->setParameter($name, $class);
+
+                    $interfaces[$class] = sprintf('%s.%s.%s.class', $this->applicationName, 'model', $model);
+                }
             }
         }
+
+        $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
+
+        foreach ($this->configFiles as $configFile) {
+            if (file_exists(sprintf('%s/%s', $this->getConfigDir(), $configFile))) {
+                $loader->load($configFile);
+            }
+        }
+
+        return $config;
     }
 
     /**
-     * Are translations supported in this app?
-     *
-     * @return bool
+     * @return string
      */
-    private function isTranslationSupported()
+    protected function getConfigDir()
     {
-        return class_exists('Sylius\Bundle\TranslationBundle\DependencyInjection\Mapper');
+        $reflector = new \ReflectionClass($this);
+        $fileName = $reflector->getFileName();
+
+        return sprintf('%s/../Resources/config', dirname($fileName));
     }
+
+    /**
+     * @return ConfigurationInterface
+     */
+    abstract protected function getBundleConfiguration();
 }

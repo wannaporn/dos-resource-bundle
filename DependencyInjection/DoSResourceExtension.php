@@ -2,6 +2,7 @@
 
 namespace DoS\ResourceBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 
@@ -10,11 +11,17 @@ class DoSResourceExtension extends AbstractResourceExtension implements PrependE
     /**
      * {@inheritdoc}
      */
+    protected function getBundleConfiguration()
+    {
+        return new Configuration();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
-        $config = $this->configure($configs, new Configuration(), $container,
-            self::CONFIGURE_LOADER
-        );
+        $config = parent::load($configs, $container);
 
         if ($config['form_factory']['enabled']) {
             $container->setParameter('dos.form.factory.class', $config['form_factory']['class']);

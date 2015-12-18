@@ -35,7 +35,6 @@ class ResolveDoctrineTargetEntitiesPass implements CompilerPassInterface
 
             if ($container->hasParameter($name)) {
                 $interfaces = $container->getParameter($name);
-
                 if (!empty($interfaces)) {
                     $resolver = new DoctrineTargetEntitiesResolver();
                     $resolver->resolve($container, $interfaces);
