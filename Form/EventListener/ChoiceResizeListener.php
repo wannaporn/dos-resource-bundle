@@ -166,6 +166,10 @@ class ChoiceResizeListener
         $form = $event->getForm();
         $data = $event->getData();
 
+        if (null == $data) {
+            return;
+        }
+
         if (is_array($data) && empty($data)) {
             return;
         }
