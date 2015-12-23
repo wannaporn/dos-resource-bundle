@@ -11,7 +11,7 @@ class FormFactoryPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         if (!$container->hasParameter('dos.form.factory.class')) {
-            retirm;
+            return;
         }
 
         $class = $container->getParameter('dos.form.factory.class');

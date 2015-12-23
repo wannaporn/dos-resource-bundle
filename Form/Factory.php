@@ -32,6 +32,8 @@ class Factory extends FormFactory
     {
         $this->registry = $registry;
         $this->resolvedTypeFactory = $resolvedTypeFactory;
+
+        parent::__construct($registry, $resolvedTypeFactory);
     }
 
     /**
@@ -174,7 +176,7 @@ class Factory extends FormFactory
             return $objectRepository->createQueryBuilder('o')
                 ->andWhere('o.user = :user')
                 ->setParameter('user', $user ?: $builder->getAttribute('user_aware'))
-                ;
+            ;
         };
     }
 }
