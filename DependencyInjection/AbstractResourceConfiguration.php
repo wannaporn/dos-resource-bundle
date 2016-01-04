@@ -32,6 +32,10 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
 
             $this->addClassesSection($resourceNode, $defaults['classes']);
 
+            if (isset($defaults['object_manager'])) {
+                $this->createObjectManagerNode($resourceNode, $defaults['object_manager']);
+            }
+
             if (!isset($defaults['validation_groups'])) {
                 $defaults['validation_groups'] = array(
                     'default' => array()
@@ -119,19 +123,13 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         return $node;
     }
 
-    /**
-     * @param string $default
-     *
-     * @return ScalarNodeDefinition
-     */
-    protected function createObjectManagerNode($default = 'default')
+    protected function createObjectManagerNode(ArrayNodeDefinition $node, $default = 'default')
     {
-        $builder = new TreeBuilder();
-        $node = $builder->root('object_manager', 'scalar');
-
-        $node->defaultValue($default);
-
-        return $node;
+        $node
+            ->children()
+                ->scalarNode('object_manager')->defaultValue($default)->end()
+            ->end()
+        ;
     }
 
     /**
@@ -228,15 +226,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
             'resources' => array(),
         ), $configs);
 
-        if(!empty($configs['object_manager'])) {
-            $node->append($this->createObjectManagerNode($configs['object_manager']));
-        }
-
         $node->append($this->createDriverNode($configs['driver']));
         $node->append($this->createResourcesSection($configs['resources']));
-
-        if (isset($configs['validation_groups'])) {
-            $this->addValidationGroupsSection($node, $configs['validation_groups']);
-        }
     }
 }
