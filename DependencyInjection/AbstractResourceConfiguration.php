@@ -124,6 +124,21 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
      *
      * @return ScalarNodeDefinition
      */
+    protected function createObjectManagerNode($default = 'default')
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('object_manager', 'scalar');
+
+        $node->defaultValue($default);
+
+        return $node;
+    }
+
+    /**
+     * @param string $default
+     *
+     * @return ScalarNodeDefinition
+     */
     protected function createInterfaceNode($default = null)
     {
         $builder = new TreeBuilder();
@@ -212,6 +227,10 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
             'driver' => SyliusResourceBundle::DRIVER_DOCTRINE_ORM,
             'resources' => array(),
         ), $configs);
+
+        if(!empty($configs['object_manager'])) {
+            $node->append($this->createObjectManagerNode($configs['object_manager']));
+        }
 
         $node->append($this->createDriverNode($configs['driver']));
         $node->append($this->createResourcesSection($configs['resources']));
