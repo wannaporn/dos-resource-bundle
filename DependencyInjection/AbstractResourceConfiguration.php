@@ -127,7 +127,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
     {
         $node
             ->children()
-                ->variableNode('options')->end()
+                ->variableNode('options')->defaultValue($default)->end()
             ->end()
         ;
     }
