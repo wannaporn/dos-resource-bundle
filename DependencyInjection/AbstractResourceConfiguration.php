@@ -32,8 +32,8 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
 
             $this->addClassesSection($resourceNode, $defaults['classes']);
 
-            if (isset($defaults['object_manager'])) {
-                $this->createObjectManagerNode($resourceNode, $defaults['object_manager']);
+            if (isset($defaults['options'])) {
+                $this->createOptionsNode($resourceNode, $defaults['options']);
             }
 
             if (!isset($defaults['validation_groups'])) {
@@ -123,11 +123,11 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         return $node;
     }
 
-    protected function createObjectManagerNode(ArrayNodeDefinition $node, $default = 'default')
+    protected function createOptionsNode(ArrayNodeDefinition $node, $default = 'default')
     {
         $node
             ->children()
-                ->scalarNode('object_manager')->defaultValue($default)->end()
+                ->variableNode('options')->end()
             ->end()
         ;
     }
