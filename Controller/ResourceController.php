@@ -135,4 +135,49 @@ class ResourceController extends BaseResourceController
 
         return $this->redirectHandler->redirectToReferer();
     }
+
+    public function batchDeleteAction(Request $request, array $ids = null)
+    {
+        if (null == $ids) {
+            $ids = $request->get('ids');
+        }
+
+        if (is_string($ids)) {
+            $ids = explode( ',', $ids);
+        }
+
+        $this->isGrantedOr403('delete');
+
+        $resources = $this->get('toro.repository.match')->findBy(array(
+            'id' => $ids
+        ));
+
+        if (!count($resources)) {
+            throw new NotFoundHttpException(
+                sprintf(
+                    'Requested %s does not exist with these ids: %s.',
+                    $this->config->getResourceName(),
+                    json_encode($this->config->getCriteria($ids))
+                )
+            );
+        }
+
+        /** @var MatchInterface $resource */
+        foreach ($resources as $resource) {
+            /** @var ResourceEvent $resource */
+            $resource = $this->domainManager->delete($resource);
+
+            if ($this->config->isApiRequest()) {
+                if ($resource instanceof ResourceEvent) {
+                    throw new HttpException($resource->getErrorCode(), $resource->getMessage());
+                }
+            }
+        }
+
+        if ($this->config->isApiRequest()) {
+            return $this->handleView($this->view());
+        }
+
+        return $this->redirectHandler->redirectToIndex();
+    }
 }
