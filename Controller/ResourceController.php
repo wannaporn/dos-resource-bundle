@@ -148,11 +148,11 @@ class ResourceController extends BaseResourceController
 
         $this->isGrantedOr403('delete');
 
-        $resources = $this->get('toro.repository.match')->findBy(array(
+        $resources = $this->getRepository()->findBy(array(
             'id' => $ids
         ));
 
-        if (!count($resources)) {
+        if (empty($resources)) {
             throw new NotFoundHttpException(
                 sprintf(
                     'Requested %s does not exist with these ids: %s.',
