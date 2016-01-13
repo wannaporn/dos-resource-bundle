@@ -12,10 +12,10 @@
     "require": {
         "knplabs/gaufrette": "0.2.*@dev",
         "misd/phone-number-bundle": "~1.0",
-        "sylius/originator": "0.16.*",
-        "sylius/resource": "0.16.*",
-        "sylius/resource-bundle": "0.16.*",
-        "sylius/money-bundle": "0.16.*",
+        "sylius/originator": "0.17.*",
+        "sylius/resource": "0.17.*",
+        "sylius/resource-bundle": "0.17.*",
+        "sylius/money-bundle": "0.17.*",
         "symfony/yaml": "~2.5",
         "twig/extensions": "^1.2",
         "cocur/slugify": "~1.2",
@@ -37,7 +37,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.16-dev"
+            "dev-master": "0.17-dev"
         }
     }
 }
