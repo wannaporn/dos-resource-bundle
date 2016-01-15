@@ -58,7 +58,9 @@ abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
             $config['resources'] = array();
         }
 
-        $this->registerResources($this->applicationName, $config['driver'], $config['resources'], $container);
+        if (isset($config['driver'])) {
+            $this->registerResources($this->applicationName, $config['driver'], $config['resources'], $container);
+        }
 
         $interfaces = array();
 
