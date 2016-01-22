@@ -2,48 +2,19 @@
 
 namespace DoS\ResourceBundle\Controller;
 
-use Doctrine\ORM\EntityManager;
-use DoS\ResourceBundle\Doctrine\ORM\EntityRepository;
+use FOS\RestBundle\View\View;
 use Sylius\Bundle\ResourceBundle\Controller\ResourceController as BaseResourceController;
-use Sylius\Component\Resource\Event\ResourceEvent;
-use Sylius\Component\Resource\Exception\UnexpectedTypeException;
+use Sylius\Component\Resource\ResourceActions;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ResourceController extends BaseResourceController
 {
     protected $activedPath = 'actived';
     protected $enabledPath = 'enabled';
-
-    /**
-     * @return EntityManager
-     */
-    protected function getManager()
-    {
-        return $this->get($this->config->getServiceName('manager'));
-    }
-
-    /**
-     * @param $resource
-     * @param bool|true $dosRepository
-     *
-     * @return \Doctrine\ORM\EntityRepository|EntityRepository
-     */
-    protected function getEntityRepository($resource, $dosRepository = true)
-    {
-        $er = $this->getManager()->getRepository(get_class($resource));
-
-        if ($dosRepository) {
-            if (!$er instanceof EntityRepository) {
-                throw new UnexpectedTypeException($er, EntityRepository::class);
-            }
-        }
-
-        return $er;
-    }
 
     /**
      * @param $string
@@ -62,20 +33,6 @@ class ResourceController extends BaseResourceController
     }
 
     /**
-     * @inheritdoc
-     */
-    public function findOr404(Request $request, array $criteria = array())
-    {
-        $resource = parent::findOr404($request, $criteria);
-
-        if ($roles = $this->config->getParameters()->get('is_granted')) {
-            $this->denyAccessUnlessGranted((array) $roles, $resource);
-        }
-
-        return $resource;
-    }
-
-    /**
      * @param Request $request
      * @param $state
      * @param null $path
@@ -84,29 +41,23 @@ class ResourceController extends BaseResourceController
      */
     public function activeStateAction(Request $request, $state, $path = null)
     {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
         $path = $path ?: $this->activedPath;
-        $resource = $this->findOr404($request);
+        $resource = $this->findOr404($configuration);
         $accessor = PropertyAccess::createPropertyAccessor();
         $accessor->setValue($resource, $path, $this->stringToBoolean($state));
 
-        $this->getManager()->transactional(function () use ($state, $resource, $path) {
-            if ($state) {
-                // reset other to false
-                $this->getEntityRepository($resource)->bulkUpdate(array($path => false));
-            }
-
-            $this->domainManager->update($resource);
-        });
-
-        if ($this->config->isApiRequest()) {
-            if ($resource instanceof ResourceEvent) {
-                throw new HttpException($resource->getErrorCode(), $resource->getMessage());
-            }
-
-            return $this->handleView($this->view($resource, 204));
+        if ($state) {
+            // reset other to false
+            $this->repository->bulkUpdate(array($path => false));
+            $this->manager->flush();
         }
 
-        return $this->redirectHandler->redirectToReferer();
+        if (!$configuration->isHtmlRequest()) {
+            return $this->viewHandler->handle($configuration, View::create($resource, 204));
+        }
+
+        return $this->redirectHandler->redirectToReferer($configuration);
     }
 
     /**
@@ -118,26 +69,36 @@ class ResourceController extends BaseResourceController
      */
     public function enableStateAction(Request $request, $state, $path = null)
     {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
+        $this->isGrantedOr403($configuration, ResourceActions::UPDATE);
+        $resource = $this->findOr404($configuration);
+
         $path = $path ?: $this->enabledPath;
-        $resource = $this->findOr404($request);
         $accessor = PropertyAccess::createPropertyAccessor();
         $accessor->setValue($resource, $path, $this->stringToBoolean($state));
 
-        $this->domainManager->update($resource);
+        $resource = $this->findOr404($configuration);
 
-        if ($this->config->isApiRequest()) {
-            if ($resource instanceof ResourceEvent) {
-                throw new HttpException($resource->getErrorCode(), $resource->getMessage());
-            }
+        $this->eventDispatcher->dispatchPreEvent(ResourceActions::UPDATE, $configuration, $resource);
+        $this->manager->flush();
+        $this->eventDispatcher->dispatchPostEvent(ResourceActions::UPDATE, $configuration, $resource);
 
-            return $this->handleView($this->view($resource, 204));
+        if (!$configuration->isHtmlRequest()) {
+            return $this->viewHandler->handle($configuration, View::create($resource, 204));
         }
 
-        return $this->redirectHandler->redirectToReferer();
+        $this->flashHelper->addSuccessFlash($configuration, $state ? $path . '_enabled' : $path . '_disabled', $resource);
+
+        return $this->redirectHandler->redirectToIndex($configuration, $resource);
     }
 
     public function batchDeleteAction(Request $request, array $ids = null)
     {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
+        $this->isGrantedOr403($configuration, ResourceActions::DELETE);
+
         if (null == $ids) {
             $ids = $request->get('ids');
         }
@@ -146,9 +107,7 @@ class ResourceController extends BaseResourceController
             $ids = explode( ',', $ids);
         }
 
-        $this->isGrantedOr403('delete');
-
-        $resources = $this->getRepository()->findBy(array(
+        $resources = $this->repository->findBy(array(
             'id' => $ids
         ));
 
@@ -156,28 +115,22 @@ class ResourceController extends BaseResourceController
             throw new NotFoundHttpException(
                 sprintf(
                     'Requested %s does not exist with these ids: %s.',
-                    $this->config->getResourceName(),
-                    json_encode($this->config->getCriteria($ids))
+                    $this->metadata->getPluralName(),
+                    json_encode($configuration->getCriteria($ids))
                 )
             );
         }
 
-        /** @var MatchInterface $resource */
         foreach ($resources as $resource) {
-            /** @var ResourceEvent $resource */
-            $resource = $this->domainManager->delete($resource);
-
-            if ($this->config->isApiRequest()) {
-                if ($resource instanceof ResourceEvent) {
-                    throw new HttpException($resource->getErrorCode(), $resource->getMessage());
-                }
-            }
+            $this->manager->remove($resource);
         }
 
-        if ($this->config->isApiRequest()) {
-            return $this->handleView($this->view());
+        $this->manager->flush();
+
+        if (!$configuration->isHtmlRequest()) {
+            return $this->viewHandler->handle($configuration, View::create(null, 204));
         }
 
-        return $this->redirectHandler->redirectToIndex();
+        return $this->redirectHandler->redirectToIndex($configuration);
     }
 }
