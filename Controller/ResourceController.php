@@ -15,6 +15,7 @@ class ResourceController extends BaseResourceController
 {
     protected $activedPath = 'actived';
     protected $enabledPath = 'enabled';
+    protected $stateMachineGraph = 'default';
 
     /**
      * @param $string
@@ -132,5 +133,41 @@ class ResourceController extends BaseResourceController
         }
 
         return $this->redirectHandler->redirectToIndex($configuration);
+    }
+
+    public function updateStateAction(Request $request, $transition, $graph = null)
+    {
+        $configuration = $this->requestConfigurationFactory->create($this->metadata, $request);
+
+        $this->isGrantedOr403($configuration, ResourceActions::UPDATE);
+        $resource = $this->findOr404($configuration);
+
+        if (null === $graph) {
+            $graph = $this->stateMachineGraph;
+        }
+
+        $stateMachine = $this->get('sm.factory')->get($resource, $graph);
+
+        if (!$stateMachine->can($transition)) {
+            throw new NotFoundHttpException(sprintf(
+                'The requested transition %s cannot be applied on the given %s with graph %s.',
+                $transition,
+                $this->metadata->getName(),
+                $graph
+            ));
+        }
+
+        $stateMachine->apply($transition);
+
+        $this->manager->flush();
+        $this->eventDispatcher->dispatchPostEvent(ResourceActions::UPDATE, $configuration, $resource);
+
+        if (!$configuration->isHtmlRequest()) {
+            return $this->viewHandler->handle($configuration, View::create($resource, 204));
+        }
+
+        $this->flashHelper->addSuccessFlash($configuration, ResourceActions::UPDATE, $resource);
+
+        return $this->redirectHandler->redirectToResource($configuration, $resource);
     }
 }
