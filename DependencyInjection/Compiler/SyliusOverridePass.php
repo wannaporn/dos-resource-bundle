@@ -18,8 +18,8 @@ class SyliusOverridePass implements CompilerPassInterface
         );
 
         $container->setParameter(
-            'sylius.controller.configuration.class',
-            $container->getParameter('dos.resource_configuration.class')
+            'sylius.resource_controller.request_configuration.class',
+            $container->getParameter('dos.resource_controller.request_configuration.class')
         );
     }
 }
