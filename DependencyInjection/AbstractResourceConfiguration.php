@@ -43,10 +43,15 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
             }
 
             $this->addValidationGroupsSection($resourceNode, $defaults['validation_groups']);
+
+            if (isset($defaults['translation'])) {
+                $this->createTranslationNode($resourceNode, $defaults['translation']);
+            }
         }
 
         return $node;
     }
+
 
     /**
      * @param ArrayNodeDefinition $node
@@ -132,6 +137,37 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         ;
     }
 
+    protected function createTranslationNode(ArrayNodeDefinition $node, array $defaults)
+    {
+        $translationNode = $node
+            ->children()
+                ->arrayNode('translation')
+                    ->addDefaultsIfNotSet()
+        ;
+
+        if ($defaults['options']) {
+            $translationNode
+                ->variableNode('options')
+                ->defaultValue($defaults['options'])
+                ->end()
+            ;
+        }
+
+        if (!isset($defaults['validation_groups'])) {
+            $defaults['validation_groups'] = array(
+                'default' => array()
+            );
+        }
+
+        $this->addValidationGroupsSection($translationNode, $defaults['validation_groups']);
+        $this->addClassesSection($translationNode, $defaults['classes']);
+
+        $translationNode
+            ->end()
+            ->end()
+        ;
+    }
+
     /**
      * @param string $default
      *
@@ -189,6 +225,42 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
      * @return ArrayNodeDefinition
      */
     protected function createFormsNode($classes)
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('form');
+
+        if (is_string($classes)) {
+            $classes = array(self::DEFAULT_KEY => $classes);
+        }
+
+        if (!isset($classes['choice'])) {
+            $classes['choice'] = 'DoS\ResourceBundle\Form\Type\ResourceChoiceType';
+        }
+
+        $node
+            ->defaultValue($classes)
+                ->useAttributeAsKey('name')
+                ->prototype('scalar')
+            ->end()
+            ->beforeNormalization()
+            ->ifString()
+                ->then(function ($v) {
+                    return array(
+                        AbstractResourceConfiguration::DEFAULT_KEY => $v,
+                    );
+                })
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * @param array|string $classes
+     *
+     * @return ArrayNodeDefinition
+     */
+    protected function createTranslationFormsNode($classes)
     {
         $builder = new TreeBuilder();
         $node = $builder->root('form');
