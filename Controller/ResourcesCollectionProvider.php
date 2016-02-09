@@ -48,7 +48,8 @@ class ResourcesCollectionProvider implements ResourcesCollectionProviderInterfac
         /** @var Pagerfanta $paginator */
         $paginator = $repository->createPaginator($config->getCriteria(), $config->getSorting());
         $paginator->setCurrentPage($request->query->get('page', 1));
-        $paginator->setMaxPerPage($request->query->get('limit', $config->getLimit()));
+        # https://github.com/Sylius/Sylius/issues/4072
+        $paginator->setMaxPerPage($request->query->get('limit', $config->getLimit() ?: 10));
 
         if (!$config->isHtmlRequest()) {
             $route = new Route($request->attributes->get('_route'), array_merge($request->attributes->get('_route_params'), $request->query->all()));
