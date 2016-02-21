@@ -9,6 +9,9 @@ use Sylius\Bundle\ResourceBundle\Controller\RequestConfiguration;
 use Sylius\Bundle\ResourceBundle\Controller\ResourcesCollectionProviderInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
 
+/**
+ * @author Paweł Jędrzejewski <pawel@sylius.org>
+ */
 class ResourcesCollectionProvider implements ResourcesCollectionProviderInterface
 {
     /**
@@ -27,36 +30,49 @@ class ResourcesCollectionProvider implements ResourcesCollectionProviderInterfac
     /**
      * {@inheritdoc}
      */
-    public function get(RequestConfiguration $config, RepositoryInterface $repository)
+    public function get(RequestConfiguration $requestConfiguration, RepositoryInterface $repository)
     {
-        if (null !== $repositoryMethod = $config->getRepositoryMethod()) {
-            $callable = [$repository, $repositoryMethod];
+        $resources = $this->getResources($requestConfiguration, $repository);
 
-            return call_user_func_array($callable, $config->getRepositoryArguments());
+        if ($resources instanceof Pagerfanta) {
+            $request = $requestConfiguration->getRequest();
+            $resources->setCurrentPage($request->query->get('page', 1));
+            $resources->setMaxPerPage($request->query->get('limit', $requestConfiguration->getPaginationMaxPerPage()));
+
+            if (!$requestConfiguration->isHtmlRequest()) {
+                $route = new Route($request->attributes->get('_route'), array_merge($request->attributes->get('_route_params'), $request->query->all()));
+
+                return $this->pagerfantaRepresentationFactory->createRepresentation($resources, $route);
+            }
         }
 
-        if (!$config->isPaginated() && !$config->isLimited()) {
+        return $resources;
+    }
+
+    /**
+     * @param RequestConfiguration $requestConfiguration
+     * @param RepositoryInterface $repository
+     *
+     * @return mixed
+     */
+    private function getResources(RequestConfiguration $requestConfiguration, RepositoryInterface $repository)
+    {
+        if (null !== $repositoryMethod = $requestConfiguration->getRepositoryMethod()) {
+            $callable = [$repository, $repositoryMethod];
+
+            $resources = call_user_func_array($callable, $requestConfiguration->getRepositoryArguments());
+
+            return $resources;
+        }
+
+        if (!$requestConfiguration->isPaginated() && !$requestConfiguration->isLimited()) {
             return $repository->findAll();
         }
 
-        if (!$config->isPaginated()) {
-            return $repository->findBy($config->getCriteria(), $config->getSorting(), $config->getLimit());
+        if (!$requestConfiguration->isPaginated()) {
+            return $repository->findBy($requestConfiguration->getCriteria(), $requestConfiguration->getSorting(), $requestConfiguration->getLimit());
         }
 
-        $request = $config->getRequest();
-
-        /** @var Pagerfanta $paginator */
-        $paginator = $repository->createPaginator($config->getCriteria(), $config->getSorting());
-        $paginator->setCurrentPage($request->query->get('page', 1));
-        # https://github.com/Sylius/Sylius/issues/4072
-        $paginator->setMaxPerPage($request->query->get('limit', $config->getLimit() ?: 10));
-
-        if (!$config->isHtmlRequest()) {
-            $route = new Route($request->attributes->get('_route'), array_merge($request->attributes->get('_route_params'), $request->query->all()));
-
-            return $this->pagerfantaRepresentationFactory->createRepresentation($paginator, $route);
-        }
-
-        return $paginator;
+        return $repository->createPaginator($requestConfiguration->getCriteria(), $requestConfiguration->getSorting());
     }
 }
