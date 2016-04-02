@@ -88,7 +88,7 @@ services:
     dos.templating.page_builder:
         class: %dos.templating.page_builder.class%
         arguments:
-            - @dos.settings
+            - @sylius.templating.helper.settings
         calls:
             - [setSeoPage, [@sonata.seo.page]]
 

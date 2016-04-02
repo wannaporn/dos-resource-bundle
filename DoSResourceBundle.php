@@ -15,6 +15,7 @@ class DoSResourceBundle extends AbstractResourceBundle
     {
         parent::build($container);
 
+        $container->addCompilerPass(new Compiler\SettingsAwarePass());
         $container->addCompilerPass(new Compiler\SyliusOverridePass());
         $container->addCompilerPass(new Compiler\FormFactoryPass());
         $container->addCompilerPass(new Compiler\SlugifyPass());
