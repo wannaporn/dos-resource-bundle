@@ -12,11 +12,11 @@
     "require": {
         "knplabs/gaufrette": "0.2.*@dev",
         "misd/phone-number-bundle": "~1.0",
+        "sylius/registry": "0.18.*",
         "sylius/originator": "0.18.*",
         "sylius/resource": "0.18.*",
         "sylius/resource-bundle": "0.18.*",
         "sylius/money-bundle": "0.18.*",
-        "sylius/registry-bundle": "0.18.*",
         "sylius/settings-bundle": "0.18.*",
         "symfony/yaml": "~2.5",
         "twig/extensions": "^1.2",
