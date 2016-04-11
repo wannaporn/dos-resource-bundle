@@ -8,8 +8,10 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
 {
@@ -28,6 +30,7 @@ abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
         'mails.yml',
         'menus.yml',
         'twigs.yml',
+        'workers.yml',
     );
 
     /**
@@ -77,6 +80,16 @@ abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
 
         $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
 
+        foreach($config['resources'] as $model => $resource) {
+            foreach($resource['classes'] as $key => $class) {
+                if ($key === 'provider') {
+                    $name = sprintf('%s.%s.%s.class', $this->applicationName, $key, $model);
+                    $container->setParameter($name, $class);
+                    $this->addProvider($container, $class, $model);
+                }
+            }
+        }
+
         foreach ($this->configFiles as $configFile) {
             if (file_exists(sprintf('%s/%s', $this->getConfigDir(), $configFile))) {
                 $loader->load($configFile);
@@ -84,6 +97,20 @@ abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
         }
 
         return $config;
+    }
+
+    protected function addProvider(ContainerBuilder $container, $providerClass, $modelName)
+    {
+        $providerReflection = new \ReflectionClass($providerClass);
+        $definition = new Definition($providerClass);
+
+        $definition->setArguments([
+            new Reference(sprintf('%s.repository.%s', $this->applicationName, $modelName)),
+            new Reference(sprintf('%s.factory.%s', $this->applicationName, $modelName)),
+        ]);
+
+        $definition->setLazy(!$providerReflection->isFinal());
+        $container->setDefinition(sprintf('%s.provider.%s', $this->applicationName, $modelName), $definition);
     }
 
     /**

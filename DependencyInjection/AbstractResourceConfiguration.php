@@ -85,6 +85,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                         ->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : 'DoS\ResourceBundle\Doctrine\ORM\EntityRepository')
                     ->end()
 
+                    ->append($this->createProviderNode(isset($defaults['provider']) ? $defaults['provider'] : null))
                     ->append($this->createInterfaceNode(isset($defaults['interface']) ? $defaults['interface'] : null))
                     ->append($this->createFormsNode(isset($defaults['form']) ? $defaults['form'] : null))
                     ->end()
@@ -185,6 +186,29 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
         $node
             ->cannotBeEmpty()
             ->info('Name of model interface')
+            ->end()
+        ;
+
+        return $node;
+    }
+
+    /**
+     * @param string $default
+     *
+     * @return ScalarNodeDefinition
+     */
+    protected function createProviderNode($default = null)
+    {
+        $builder = new TreeBuilder();
+        $node = $builder->root('provider', 'scalar');
+
+        if ($default) {
+            $node->defaultValue($default);
+        }
+
+        $node
+            ->cannotBeEmpty()
+            ->info('Name of model provider')
             ->end()
         ;
 

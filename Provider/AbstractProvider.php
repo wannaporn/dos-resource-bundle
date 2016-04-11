@@ -11,7 +11,7 @@ use Sylius\Component\Resource\Model\ResourceInterface;
 /**
  * @author liverbool <nukboon@gmail.com>
  */
-abstract class AbstractProvider
+abstract class AbstractProvider implements ProviderInterface
 {
     /**
      * @var EntityManager|DocumentManager
