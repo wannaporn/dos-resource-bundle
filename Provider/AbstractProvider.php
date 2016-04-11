@@ -76,6 +76,30 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
+     * @param ResourceInterface $resource
+     */
+    public function detach(ResourceInterface $resource)
+    {
+        $this->manager->detach($resource);
+    }
+
+    /**
+     * @param ResourceInterface $resource
+     */
+    public function remove(ResourceInterface $resource)
+    {
+        $this->manager->remove($resource);
+    }
+
+    /**
+     * @param null $objectName
+     */
+    public function clear($objectName = null)
+    {
+        $this->manager->clear($objectName);
+    }
+
+    /**
      * @param $id
      *
      * @return ResourceInterface
