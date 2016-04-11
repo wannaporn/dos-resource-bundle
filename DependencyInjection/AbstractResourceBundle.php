@@ -81,18 +81,4 @@ abstract class AbstractResourceBundle extends BaseAbstractResourceBundle
             return $this->extension;
         }
     }
-
-    public function build(ContainerBuilder $builder)
-    {
-        parent::build($builder);
-
-        if ($extension = $this->getContainerExtension()) {
-            $builder->addCompilerPass(
-                new ResolveDoctrineTargetEntitiesPass(
-                    $this->getBundlePrefix(),
-                    $extension->getAlias()
-                )
-            );
-        }
-    }
 }

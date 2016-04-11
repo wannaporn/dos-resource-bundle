@@ -65,21 +65,6 @@ abstract class AbstractResourceExtension extends BaseAbstractResourceExtension
             $this->registerResources($this->applicationName, $config['driver'], $config['resources'], $container);
         }
 
-        $interfaces = array();
-
-        foreach($config['resources'] as $model => $resource) {
-            foreach($resource['classes'] as $key => $class) {
-                if ($key === 'interface') {
-                    $name = sprintf('%s.%s.%s.class', $this->applicationName, $key, $model);
-                    $container->setParameter($name, $class);
-
-                    $interfaces[$class] = sprintf('%s.%s.%s.class', $this->applicationName, 'model', $model);
-                }
-            }
-        }
-
-        $container->setParameter($this->getAlias() . '_interfaces', $interfaces);
-
         foreach($config['resources'] as $model => $resource) {
             foreach($resource['classes'] as $key => $class) {
                 if ($key === 'provider') {
