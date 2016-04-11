@@ -85,7 +85,11 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                         ->defaultValue(isset($defaults['repository']) ? $defaults['repository'] : 'DoS\ResourceBundle\Doctrine\ORM\EntityRepository')
                     ->end()
 
-                    ->scalarNode('interface')->isRequired()->cannotBeEmpty()->end()
+                    ->scalarNode('interface')
+                        ->cannotBeEmpty()
+                        ->isRequired()
+                        ->defaultValue(isset($defaults['interface']) ? $defaults['interface'] : null)
+                    ->end()
 
                     ->append($this->createProviderNode(isset($defaults['provider']) ? $defaults['provider'] : null))
                     ->append($this->createFormsNode(isset($defaults['form']) ? $defaults['form'] : null))
