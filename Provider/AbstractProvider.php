@@ -4,9 +4,9 @@ namespace DoS\ResourceBundle\Provider;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
-use DoS\ResourceBundle\Doctrine\RepositoryInterface;
-use DoS\ResourceBundle\Factory\FactoryInterface;
+use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Model\ResourceInterface;
+use Sylius\Component\Resource\Repository\RepositoryInterface;
 
 /**
  * @author liverbool <nukboon@gmail.com>
