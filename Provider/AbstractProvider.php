@@ -2,8 +2,7 @@
 
 namespace DoS\ResourceBundle\Provider;
 
-use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Sylius\Component\Resource\Factory\FactoryInterface;
 use Sylius\Component\Resource\Model\ResourceInterface;
 use Sylius\Component\Resource\Repository\RepositoryInterface;
@@ -14,7 +13,7 @@ use Sylius\Component\Resource\Repository\RepositoryInterface;
 abstract class AbstractProvider implements ProviderInterface
 {
     /**
-     * @var EntityManager|DocumentManager
+     * @var ObjectManager
      */
     protected $manager;
 
@@ -33,12 +32,16 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $factory;
 
-    public function __construct(RepositoryInterface $repository, FactoryInterface $factory)
-    {
+    public function __construct(
+        RepositoryInterface $repository,
+        FactoryInterface $factory,
+        ObjectManager $manager = null,
+        $dataClass = null
+    ) {
         $this->repository = $repository;
         $this->factory = $factory;
-        $this->manager = $repository->getManager();
-        $this->dataClass = $repository->getEntityName();
+        $this->manager = $manager ?: $repository->getManager();
+        $this->dataClass = $dataClass ?: $repository->getEntityName();
     }
 
     /**
