@@ -3,8 +3,10 @@
 namespace DoS\ResourceBundle\Twig\Extension;
 
 use Sylius\Bundle\MoneyBundle\Templating\Helper\MoneyHelper;
+use Sylius\Bundle\MoneyBundle\Templating\Helper\MoneyHelperInterface;
 use Sylius\Bundle\SettingsBundle\Templating\Helper\SettingsHelper;
-use Symfony\Component\Intl\Intl as SymfonyIntl; #fix small bug in console with Intl naming
+use Symfony\Component\Intl\Intl as SymfonyIntl;
+use Symfony\Component\Templating\Helper\HelperInterface; #fix small bug in console with Intl naming
 
 class Currency extends \Twig_Extension
 {
@@ -25,8 +27,8 @@ class Currency extends \Twig_Extension
     );
 
     public function __construct(
-        MoneyHelper $moneyHelper,
-        SettingsHelper $helper,
+        MoneyHelperInterface $moneyHelper,
+        HelperInterface $helper,
         $generalCurrencyKey = 'general.currency',
         array $currencySymbols = array()
     ) {
