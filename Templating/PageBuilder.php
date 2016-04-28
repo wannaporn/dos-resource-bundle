@@ -144,6 +144,22 @@ class PageBuilder
     }
 
     /**
+     * @param string $key
+     *
+     * @return null|mixed
+     */
+    private function getSetting($key)
+    {
+        $settings = $this->settingsHelper->getSettings('general');
+
+        if (array_key_exists($key, $settings)) {
+            return $settings[$key];
+        }
+
+        return null;
+    }
+
+    /**
      * Configure the option resolver.
      *
      * @param OptionsResolver $resolver
@@ -156,13 +172,13 @@ class PageBuilder
             'id' => null,
             'css' => null,
             'charset' => 'UTF-8',
-            'domain' => $title = $this->settingsHelper->getSettingsParameter('general.domain'),
-            'title' => $title = $this->settingsHelper->getSettingsParameter('general.title'),
-            'locale' => $this->settingsHelper->getSettingsParameter('general.locale'),
+            'domain' => $title = $this->getSetting('domain'),
+            'title' => $title = $this->getSetting('title'),
+            'locale' => $this->getSetting('locale'),
             'metas' => array(
-                'keywords' => $keywords = $this->settingsHelper->getSettingsParameter('general.meta_keywords'),
-                'description' => $description = $this->settingsHelper->getSettingsParameter('general.meta_description'),
-                'robots' => $this->settingsHelper->getSettingsParameter('general.meta_robots'),
+                'keywords' => $keywords = $this->getSetting('meta_keywords'),
+                'description' => $description = $this->getSetting('meta_description'),
+                'robots' => $this->getSetting('meta_robots'),
             ),
             'blocks' => null,
             'styles' => null,

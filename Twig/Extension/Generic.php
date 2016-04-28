@@ -55,7 +55,7 @@ class Generic extends \Twig_Extension
             new \Twig_SimpleFunction('is_string', 'is_string'),
             new \Twig_SimpleFunction('ui_random_string', array($this, 'getRandomString'), $self),
             new \Twig_SimpleFunction('ui_percentage', array($this, 'calculatePercent')),
-            new \Twig_SimpleFunction('ui_setting', array($this->settingsHelper, 'getSettingsParameter')),
+            new \Twig_SimpleFunction('ui_setting', array($this, 'getSettingsParameter')),
             new \Twig_SimpleFunction('ui_settings', array($this->settingsHelper, 'getSettings')),
             new \Twig_SimpleFunction('ui_param', array($this->container, 'getParameter')),
             new \Twig_SimpleFunction('ui_param_has', array($this->container, 'hasParameter')),
@@ -74,6 +74,27 @@ class Generic extends \Twig_Extension
             new \Twig_SimpleFilter('is_match', array($this, 'match')),
             new \Twig_SimpleFilter('ui_no_space', array($this, 'cleanWhiteSpace')),
         );
+    }
+
+    /**
+     * @param $key
+     * @param string $default
+     *
+     * @return null|mixed
+     */
+    public function getSettingsParameter($key, $default = null)
+    {
+        list($alias, $key) = explode('.', $key);
+
+        $settings = $this->container->get('sylius.templating.helper.settings')
+            ->getSettings($alias)
+        ;
+
+        if (array_key_exists($key, $settings)) {
+            return $settings[$key];
+        }
+
+        return $default;
     }
 
     public function getRandomString($length = 8)
