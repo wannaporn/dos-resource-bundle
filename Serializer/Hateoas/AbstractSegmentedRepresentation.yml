@@ -4,8 +4,8 @@ Hateoas\Representation\AbstractSegmentedRepresentation:
         limit:
             type: integer
             expose: true
-            groups: [Hateoas]
+            groups: [Default, Hateoas]
         total:
             type: integer
             expose: true
-            groups: [Hateoas]
+            groups: [Default, Hateoas]

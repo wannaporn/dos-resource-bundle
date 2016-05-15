@@ -10,21 +10,21 @@ Hateoas\Representation\PaginatedRepresentation:
           parameters: expr(object.getParameters())
           absolute: true
         exclusion:
-          groups: [Hateoas]
+          groups: [Default, Hateoas]
       - rel: first
         href:
           route: expr(object.getRoute())
           parameters: expr(object.getParameters(1))
           absolute: true
         exclusion:
-          groups: [Hateoas]
+          groups: [Default, Hateoas]
       - rel: last
         href:
           route: expr(object.getRoute())
           parameters: expr(object.getParameters(object.getPages()))
           absolute: true
         exclusion:
-          groups: [Hateoas]
+          groups: [Default, Hateoas]
           exclude_if: expr(object.getPages() === null)
       - rel: next
         href:
@@ -32,21 +32,20 @@ Hateoas\Representation\PaginatedRepresentation:
           parameters: expr(object.getParameters(object.getPage()+1))
           absolute: true
         exclusion:
-          groups: [Hateoas]
+          groups: [Default, Hateoas]
           exclude_if: expr(object.getPages() !== null && (object.getPage() + 1) > object.getPages())
       - rel: previous
         href:
           route: expr(object.getRoute())
           parameters: expr(object.getParameters(object.getPage()-1))
           absolute: true
-          #absolute: expr(object.isAbsolute())
         exclusion:
-          groups: [Hateoas]
+          groups: [Default, Hateoas]
           exclude_if: expr((object.getPage() - 1) < 1)
     properties:
         page:
             expose: true
-            groups: [Hateoas]
+            groups: [Default, Hateoas]
         pages:
             expose: true
-            groups: [Hateoas]
+            groups: [Default, Hateoas]
