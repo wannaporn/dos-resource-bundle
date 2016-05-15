@@ -1,0 +1,11 @@
+Hateoas\Representation\AbstractSegmentedRepresentation:
+    exclusion_policy: all
+    properties:
+        limit:
+            type: integer
+            expose: true
+            groups: [Hateoas]
+        total:
+            type: integer
+            expose: true
+            groups: [Hateoas]

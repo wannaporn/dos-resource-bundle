@@ -1,0 +1,7 @@
+Hateoas\Representation\RouteAwareRepresentation:
+    exclusion_policy: all
+    properties:
+        inline:
+            expose: true
+            groups: [Default, Hateoas]
+            serialized_name: _embedded
