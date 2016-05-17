@@ -151,7 +151,7 @@ abstract class AbstractResourceConfiguration implements ConfigurationInterface
                     ->addDefaultsIfNotSet()
         ;
 
-        if ($defaults['options']) {
+        if (isset($defaults['options'])) {
             $translationNode
                 ->variableNode('options')
                 ->defaultValue($defaults['options'])
