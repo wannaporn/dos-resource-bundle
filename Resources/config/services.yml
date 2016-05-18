@@ -23,6 +23,34 @@ parameters:
     dos.class.twig.extension.routing: DoS\ResourceBundle\Twig\Extension\Routing
 
 services:
+    dos.resource_controller.collection_provider:
+        class: DoS\ResourceBundle\AclDecoratedResolver\ResourcesCollectionProvider
+        decorates: sylius.resource_controller.resources_collection_provider
+        arguments:
+            - "@dos.resource_controller.collection_provider.inner"
+            - "@sylius.authorization_identity_provider"
+            - "@sylius.authorization_checker"
+
+    dos.resource_controller.single_provider:
+        class: DoS\ResourceBundle\AclDecoratedResolver\SingleResourceProvider
+        decorates: sylius.resource_controller.single_resource_provider
+        arguments:
+            - "@dos.resource_controller.single_provider.inner"
+            - "@security.authorization_checker"
+            - "@sylius.authorization_checker"
+
+    dos.grid.filters_applicator:
+        class: DoS\ResourceBundle\AclDecoratedResolver\Grid\FiltersApplicator
+        decorates: sylius.grid.filters_applicator
+        arguments:
+            - "@dos.grid.filters_applicator.inner"
+            - "@sylius.registry.grid_filter"
+
+    dos.grid.filter.resource_owner:
+        class: DoS\ResourceBundle\AclDecoratedResolver\Grid\ResourceOwnerFilter
+        tags:
+            - { name: sylius.grid_filter, type: resource_owner }
+
     dos.rest.view_handler:
         parent: fos_rest.view_handler.default
         class: %dos.rest.view_handler.class%
