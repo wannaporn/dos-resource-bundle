@@ -61,7 +61,7 @@ class ResourcesCollectionProvider implements ResourcesCollectionProviderInterfac
      */
     public function get(RequestConfiguration $requestConfiguration, RepositoryInterface $repository)
     {
-        if ($this->requireOwnerCheck($vars = $requestConfiguration->getVars())) {
+        if ($requestConfiguration->hasPermission() && $this->requireOwnerCheck($vars = $requestConfiguration->getVars())) {
             $owner = $this->currentIdentityProvider->getIdentity();
             $ownerField = is_bool($vars['acl_owner'])
                 ? ResourceOwnerFilter::FIELD

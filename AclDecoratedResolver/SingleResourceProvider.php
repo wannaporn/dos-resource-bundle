@@ -64,7 +64,7 @@ class SingleResourceProvider implements SingleResourceProviderInterface
     {
         $resource = $this->singleResourceDecorator->get($requestConfiguration, $repository);
 
-        if ($resource && $this->requireOwnerCheck($requestConfiguration->getVars())) {
+        if ($requestConfiguration->hasPermission() && $resource && $this->requireOwnerCheck($requestConfiguration->getVars())) {
             try {
                 if ($this->authorizationChecker->isGranted('OWNER', $resource)) {
                     return $resource;
