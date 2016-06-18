@@ -2,9 +2,6 @@
 
 namespace DoS\ResourceBundle\Twig\Extension;
 
-use libphonenumber\PhoneNumber;
-use libphonenumber\PhoneNumberFormat;
-use Misd\PhoneNumberBundle\Templating\Helper\PhoneNumberFormatHelper;
 use Sylius\Bundle\SettingsBundle\Templating\Helper\SettingsHelper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -17,11 +14,6 @@ class Generic extends \Twig_Extension
     protected $container;
 
     /**
-     * @var PhoneNumberFormatHelper
-     */
-    protected $phoneNumberHelper;
-
-    /**
      * @var SettingsHelper
      */
     protected $settingsHelper;
@@ -29,7 +21,6 @@ class Generic extends \Twig_Extension
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->phoneNumberHelper = $container->get('misd_phone_number.templating.helper.format');
         $this->settingsHelper = $container->get('sylius.templating.helper.settings');
     }
 
@@ -70,7 +61,6 @@ class Generic extends \Twig_Extension
         //$self = array('is_safe' => array('all'));
 
         return array(
-            new \Twig_SimpleFilter('phone_number', array($this, 'getPhoneFormat')),
             new \Twig_SimpleFilter('is_match', array($this, 'match')),
             new \Twig_SimpleFilter('ui_no_space', array($this, 'cleanWhiteSpace')),
         );
@@ -107,23 +97,6 @@ class Generic extends \Twig_Extension
         }
 
         return $randomString;
-    }
-
-    /**
-     * @param PhoneNumber $phoneNumber
-     * @param int         $defaultRegion
-     *
-     * @return null|string
-     */
-    public function getPhoneFormat(
-        PhoneNumber $phoneNumber = null,
-        $defaultRegion = PhoneNumberFormat::NATIONAL
-    ) {
-        if (empty($phoneNumber)) {
-            return;
-        }
-
-        return $this->phoneNumberHelper->format($phoneNumber, $defaultRegion);
     }
 
     /**

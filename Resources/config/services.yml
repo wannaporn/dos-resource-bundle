@@ -10,7 +10,6 @@ parameters:
 
     dos.image_uploader.class: DoS\ResourceBundle\Uploader\ImageUploader
     dos.originator.class: DoS\ResourceBundle\Originator\Originator
-    dos.templating.page_builder.class: DoS\ResourceBundle\Templating\PageBuilder
     dos.rest.view_handler.class: DoS\ResourceBundle\Rest\ViewHandler
 
     dos.class.twig.extension.intl: DoS\ResourceBundle\Twig\Extension\Intl
@@ -113,13 +112,6 @@ services:
         arguments:
             - @doctrine
 
-    dos.templating.page_builder:
-        class: %dos.templating.page_builder.class%
-        arguments:
-            - @sylius.templating.helper.settings
-        calls:
-            - [setSeoPage, [@sonata.seo.page]]
-
     dos.twig.extension.intl:
         class: %dos.class.twig.extension.intl%
         arguments:
@@ -162,17 +154,6 @@ services:
         tags:
             - { name: twig.extension }
             - { name: kernel.event_listener, event: kernel.request, method: fetchRequest }
-
-    dos.twig.extension.page:
-        class: %dos.class.twig.extension.page%
-        strict: false
-        arguments:
-            - @dos.templating.page_builder
-            - @sonata.seo.twig.extension
-        calls:
-            - [setContainer, [@service_container]]
-        tags:
-            - { name: twig.extension }
 
     dos.twig.extension.text:
      class: Twig_Extensions_Extension_Text
